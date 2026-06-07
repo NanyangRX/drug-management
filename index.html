@@ -563,9 +563,39 @@ function renderSearch() {
       (fil==='ok'   && d.stock!=='?');
     return mq && mf;
   });
+  // 按廠商排序，廠商未填的排最後
+  f.sort((a, b) => {
+    if (a.vendor === '?' && b.vendor !== '?') return 1;
+    if (a.vendor !== '?' && b.vendor === '?') return -1;
+    if (a.vendor < b.vendor) return -1;
+    if (a.vendor > b.vendor) return 1;
+    return a.name.localeCompare(b.name);
+  });
+  // 按廠商排序，廠商未填排最後
+  f.sort((a, b) => {
+    if (a.vendor === '?' && b.vendor !== '?') return 1;
+    if (a.vendor !== '?' && b.vendor === '?') return -1;
+    if (a.vendor < b.vendor) return -1;
+    if (a.vendor > b.vendor) return 1;
+    return a.name.localeCompare(b.name);
+  });
+
   document.getElementById('search-meta').textContent = `顯示 ${f.length} / ${drugs.length} 筆`;
-  document.getElementById('search-list').innerHTML = f.length ? f.map(d => `
-    <div class="drug-card${cardClass(d)}">
+
+  if (!f.length) {
+    document.getElementById('search-list').innerHTML = '<div class="empty-state">找不到符合的藥品</div>';
+    return;
+  }
+
+  let out = '';
+  let lastVendor = null;
+  f.forEach(d => {
+    const vendorLabel = d.vendor === '?' ? '廠商未填' : d.vendor;
+    if (vendorLabel !== lastVendor) {
+      out += `<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:var(--text-3);font-family:var(--mono);padding:${lastVendor ? '18px' : '4px'} 4px 6px;border-bottom:1px solid var(--border);margin-bottom:8px;">${vendorLabel}</div>`;
+      lastVendor = vendorLabel;
+    }
+    out += `<div class="drug-card${cardClass(d)}">
       <div class="dc-top">
         <div><div class="dc-name">${d.name}</div><div class="dc-code">${d.code}</div></div>
         <div class="dc-badges">
@@ -581,7 +611,9 @@ function renderSearch() {
         <div class="dc-cell"><div class="dc-label">效期</div><div class="dc-value${expCellClass(d)}">${d.expiry}</div></div>
         <div class="dc-cell"><div class="dc-label">廠商</div><div class="dc-value${d.vendor==='?' ? ' unknown' : ''}">${d.vendor==='?' ? '未填' : d.vendor}</div></div>
       </div>
-    </div>`).join('') : '<div class="empty-state">找不到符合的藥品</div>';
+    </div>`;
+  });
+  document.getElementById('search-list').innerHTML = out;
 }
 
 function renderAlert() {
