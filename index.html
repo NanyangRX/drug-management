@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>南陽藥局 · 藥品管理系統</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F2F0EB;
+  --surface: #FAFAF7;
+  --border: #E0DDD5;
+  --border-strong: #C8C4BA;
+  --text-1: #18180F;
+  --text-2: #5C5950;
+  --text-3: #9E9B93;
+  --accent: #1C4A10;
+  --accent-bg: #EAF2E5;
+  --red: #B83228;
+  --red-bg: #FAEAE8;
+  --amber: #A05C08;
+  --amber-bg: #FEF2E0;
+  --purple: #5A3A8A;
+  --purple-bg: #F2EDF8;
+  --mono: 'DM Mono', monospace;
+  --sans: 'Noto Sans TC', sans-serif;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); font-family: var(--sans); color: var(--text-1); min-height: 100vh; display: flex; font-size: 14px; }
+
+/* Sidebar */
+.sidebar { width: 210px; min-height: 100vh; background: var(--text-1); display: flex; flex-direction: column; position: fixed; top:0; left:0; z-index:10; }
+.logo { padding: 28px 22px 24px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.logo-pharmacy-name {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.22em;
+  font-family: var(--sans);
+  margin-bottom: 8px;
+  background: #1A4A2A;
+  border: 1.5px solid #4A8A60;
+  border-radius: 6px;
+  padding: 6px 14px;
+  display: inline-block;
+  text-shadow: none;
+}
+.logo-divider {
+  width: 28px;
+  height: 2px;
+  background: #7ABF65;
+  border-radius: 1px;
+  margin-bottom: 10px;
+  opacity: 0.7;
+}
+.logo-title { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: 0.06em; }
+.logo-sub { font-size: 10px; color: rgba(255,255,255,0.3); font-family: var(--mono); margin-top: 4px; }
+.nav { padding: 18px 0; flex: 1; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 22px; font-size: 12.5px; color: rgba(255,255,255,0.42); cursor: pointer; border-left: 2px solid transparent; transition: all 0.12s; user-select: none; }
+.nav-item:hover { color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.04); }
+.nav-item.active { color: #fff; border-left-color: #7ABF65; background: rgba(255,255,255,0.07); }
+.nav-icon { font-size: 15px; width: 18px; text-align: center; }
+.sidebar-footer { padding: 20px 22px; border-top: 1px solid rgba(255,255,255,0.07); }
+.sf-row { margin-bottom: 13px; }
+.sf-row:last-child { margin-bottom: 0; }
+.sf-num { font-size: 21px; font-weight: 600; color: #fff; font-family: var(--mono); line-height: 1; }
+.sf-lbl { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 3px; }
+
+/* Main */
+.main { margin-left: 210px; flex: 1; padding: 36px 40px; min-height: 100vh; }
+.page-head { margin-bottom: 26px; }
+.page-title { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.page-sub { font-size: 12px; color: var(--text-3); margin-top: 4px; font-family: var(--mono); }
+.page { display: none; }
+.page.active { display: block; }
+
+/* Controls */
+.controls { display: flex; gap: 8px; margin-bottom: 12px; }
+.search-input { flex: 1; padding: 9px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--sans); color: var(--text-1); outline: none; transition: border-color 0.12s; }
+.search-input:focus { border-color: var(--border-strong); }
+.search-input::placeholder { color: var(--text-3); }
+.filter-select { padding: 9px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; font-family: var(--sans); color: var(--text-1); outline: none; cursor: pointer; }
+.result-meta { font-size: 11px; color: var(--text-3); font-family: var(--mono); margin-bottom: 12px; }
+
+/* Drug card */
+.drug-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 7px; transition: border-color 0.12s, box-shadow 0.12s; }
+.drug-card:hover { border-color: var(--border-strong); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.drug-card.is-ctrl { border-left: 3px solid var(--purple); }
+.drug-card.is-expired { border-left: 3px solid var(--red); }
+.drug-card.is-warn { border-left: 3px solid var(--amber); }
+.dc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 9px; }
+.dc-name { font-size: 13.5px; font-weight: 500; }
+.dc-code { font-size: 10px; color: var(--text-3); font-family: var(--mono); margin-top: 2px; }
+.dc-badges { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
+.badge { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 500; font-family: var(--mono); white-space: nowrap; }
+.b-ctrl { background: var(--purple-bg); color: var(--purple); }
+.b-pend { background: var(--amber-bg); color: var(--amber); }
+.b-ok { background: var(--accent-bg); color: var(--accent); }
+.b-red { background: var(--red-bg); color: var(--red); }
+.b-amber { background: var(--amber-bg); color: var(--amber); }
+.dc-generic { font-size: 11px; color: var(--text-2); margin-bottom: 9px; }
+.dc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.dc-cell { background: var(--bg); border-radius: var(--radius-sm); padding: 6px 9px; }
+.dc-label { font-size: 10px; color: var(--text-3); margin-bottom: 2px; }
+.dc-value { font-size: 12px; font-weight: 500; font-family: var(--mono); }
+.dc-value.unknown { color: var(--text-3); font-weight: 400; font-family: var(--sans); }
+.dc-value.v-red { color: var(--red); }
+.dc-value.v-amber { color: var(--amber); }
+
+/* Alert page */
+.alert-section { margin-bottom: 28px; }
+.section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); font-family: var(--mono); margin-bottom: 10px; }
+.alert-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px; margin-bottom: 6px; display: flex; align-items: center; gap: 14px; transition: border-color 0.12s; }
+.alert-row:hover { border-color: var(--border-strong); }
+.alert-row.a-red { background: var(--red-bg); border-color: #F0C4C0; }
+.alert-row.a-amber { background: var(--amber-bg); border-color: #F5DFB8; }
+.alert-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.dot-red { background: var(--red); }
+.dot-amber { background: var(--amber); }
+.alert-body { flex: 1; }
+.alert-name { font-size: 13px; font-weight: 500; }
+.alert-meta { font-size: 11px; color: var(--text-2); margin-top: 2px; font-family: var(--mono); }
+.alert-right { text-align: right; flex-shrink: 0; }
+.alert-days-num { font-size: 18px; font-weight: 600; font-family: var(--mono); }
+.alert-days-lbl { font-size: 10px; color: var(--text-3); }
+
+/* Vendor */
+.vendor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+.vendor-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; transition: border-color 0.12s; }
+.vendor-card:hover { border-color: var(--border-strong); }
+.vc-name { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+.vc-count { display: inline-block; font-size: 10px; font-family: var(--mono); background: var(--accent-bg); color: var(--accent); padding: 2px 7px; border-radius: 3px; margin-bottom: 8px; }
+.vc-drugs { font-size: 11px; color: var(--text-2); line-height: 1.7; }
+
+/* Overview */
+.ov-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 28px; }
+.ov-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+.ov-num { font-size: 26px; font-weight: 600; font-family: var(--mono); line-height: 1; }
+.ov-lbl { font-size: 11px; color: var(--text-2); margin-top: 6px; }
+.shelf-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.shelf-key { width: 30px; height: 30px; border-radius: var(--radius-sm); background: var(--accent-bg); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--accent); font-family: var(--mono); flex-shrink: 0; }
+.shelf-name { flex: 1; font-size: 12.5px; }
+.shelf-n { font-size: 12px; font-weight: 500; font-family: var(--mono); width: 28px; text-align: right; }
+.bar-track { width: 90px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+.bar-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+.empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-3); font-size: 13px; }
+
+/* Modal */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 560px;
+  max-width: 92vw;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
+}
+.modal-header {
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.modal-vendor-name { font-size: 16px; font-weight: 600; }
+.modal-tel {
+  font-size: 13px;
+  font-family: var(--mono);
+  color: var(--accent);
+  margin-top: 4px;
+}
+.modal-close {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-size: 16px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text-2);
+  flex-shrink: 0;
+  transition: background 0.12s;
+}
+.modal-close:hover { background: var(--border); }
+.modal-count {
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text-3);
+  padding: 8px 22px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-body { overflow-y: auto; padding: 12px 16px; }
+.modal-drug-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 10px;
+  border-radius: var(--radius-sm);
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+.modal-drug-row:last-child { border-bottom: none; }
+.modal-drug-row:hover { background: var(--bg); }
+.mdr-left { flex: 1; }
+.mdr-name { font-size: 13px; font-weight: 500; }
+.mdr-generic { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.mdr-right { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+.mdr-shelf {
+  font-size: 11px;
+  font-family: var(--mono);
+  background: var(--accent-bg);
+  color: var(--accent);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+.mdr-ctrl {
+  font-size: 10px;
+  font-family: var(--mono);
+  background: var(--purple-bg);
+  color: var(--purple);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-pharmacy-name">南陽藥局</div>
+    <div class="logo-divider"></div>
+    <div class="logo-title">藥品管理系統</div>
+    <div class="logo-sub">PHARMACY · v1.0</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-item active" onclick="showPage('search',this)"><span class="nav-icon">⌕</span> 查藥</div>
+    <div class="nav-item" onclick="showPage('alert',this)"><span class="nav-icon">⚠</span> 效期預警</div>
+    <div class="nav-item" onclick="showPage('vendor',this)"><span class="nav-icon">⊞</span> 廠商一覽</div>
+    <div class="nav-item" onclick="showPage('overview',this)"><span class="nav-icon">◧</span> 總覽</div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sf-row"><div class="sf-num">65</div><div class="sf-lbl">已建檔藥品</div></div>
+    <div class="sf-row"><div class="sf-num" style="color:#F08878" id="sf-exp"></div><div class="sf-lbl">效期警示</div></div>
+    <div class="sf-row"><div class="sf-num" style="color:#C89060" id="sf-ctrl"></div><div class="sf-lbl">管制藥品</div></div>
+    <div class="sf-row"><div class="sf-num" style="color:#A0A090" id="sf-pend"></div><div class="sf-lbl">庫存待確認</div></div>
+  </div>
+</aside>
+
+<main class="main">
+
+  <!-- 查藥 -->
+  <div id="page-search" class="page active">
+    <div class="page-head">
+      <div class="page-title">查藥</div>
+      <div class="page-sub">輸入藥名、成分、代碼或廠商名稱搜尋</div>
+    </div>
+    <div class="controls">
+      <input class="search-input" id="q" placeholder="例：Merislon、Betahistine、衛采…" oninput="renderSearch()" />
+      <select class="filter-select" id="fil" onchange="renderSearch()">
+        <option value="">全部藥品</option>
+        <option value="exp">效期警示</option>
+        <option value="ctrl">管制藥品</option>
+        <option value="pend">庫存待確認</option>
+        <option value="ok">庫存已確認</option>
+      </select>
+    </div>
+    <div class="result-meta" id="search-meta"></div>
+    <div id="search-list"></div>
+  </div>
+
+  <!-- 效期預警 -->
+  <div id="page-alert" class="page">
+    <div class="page-head">
+      <div class="page-title">效期預警</div>
+      <div class="page-sub">自動列出即將到期藥品，依緊急程度排序（模擬資料）</div>
+    </div>
+    <div class="alert-section">
+      <div class="section-label">▲ 30天內到期</div>
+      <div id="alert-urgent"></div>
+    </div>
+    <div class="alert-section">
+      <div class="section-label">△ 31–90天內到期</div>
+      <div id="alert-warn"></div>
+    </div>
+  </div>
+
+  <!-- 廠商 -->
+  <div id="page-vendor" class="page">
+    <div class="page-head">
+      <div class="page-title">廠商一覽</div>
+      <div class="page-sub">依供應品項數量排序</div>
+    </div>
+    <div class="result-meta" id="vendor-meta"></div>
+    <div class="vendor-grid" id="vendor-list"></div>
+  </div>
+
+  <!-- 總覽 -->
+  <div id="page-overview" class="page">
+    <div class="page-head">
+      <div class="page-title">總覽</div>
+      <div class="page-sub">建檔狀態與貨架分布</div>
+    </div>
+    <div class="ov-stats">
+      <div class="ov-card"><div class="ov-num">65</div><div class="ov-lbl">已建檔藥品</div></div>
+      <div class="ov-card"><div class="ov-num" id="ov-exp" style="color:var(--red)"></div><div class="ov-lbl">效期警示</div></div>
+      <div class="ov-card"><div class="ov-num" id="ov-ctrl" style="color:var(--purple)"></div><div class="ov-lbl">管制藥品</div></div>
+      <div class="ov-card"><div class="ov-num" id="ov-vendor"></div><div class="ov-lbl">供應廠商數</div></div>
+    </div>
+    <div class="section-label">貨架分布</div>
+    <div id="shelf-list"></div>
+  </div>
+
+</main>
+
+<script>
+// 模擬效期：隨機分配，部分刻意設為即將到期以示範預警功能
+const mockExpiry = [
+  '2026/07','2025/08','2027/01','2026/11','2026/06',
+  '2026/08','2027/03','2026/09','2026/12','2027/02',
+  '2026/07','2026/05','2026/10','2025/09','2027/04',
+  '2026/08','2027/01','2026/06','2027/06','2026/09',
+  '2026/03','2026/07','2026/11','2027/02','2026/08',
+  '2026/10','2026/05','2027/01','2026/09','2027/05',
+  '2026/04','2026/08','2026/06','2026/10','2026/11',
+  '2026/05','2026/09','2026/07','2026/04','2026/12',
+  '2026/08','2026/03','2027/01','2026/06','2026/09',
+  '2025/11','2026/07','2026/04','2026/10','2027/02',
+  '2026/05','2026/08','2026/06','2026/09','2027/03',
+  '2026/07','2026/10','2026/04','2026/08','2027/01',
+  '2026/09','2026/06','2026/11','2027/04','2026/07',
+];
+
+const drugs = [
+  {code:'AC293561G0',name:'Merislon Tab 12mg 敏使朗錠',generic:'Betahistine',shelf:'GO1',stock:'LA1',ctrl:false,vendor:'衛采製藥'},
+  {code:'AC44041100',name:'MEITIFEN SR TAB 75MG',generic:'Diclofenac Sodium 75mg',shelf:'G?抽',stock:'LB2',ctrl:false,vendor:'永勝藥品工業'},
+  {code:'241014',name:'Pronolol 10mg',generic:'Propranolol',shelf:'G?抽',stock:'LC3',ctrl:false,vendor:'?'},
+  {code:'AC57138100',name:'Epine Tab 200mg',generic:'Quetiapine fumarate 200mg',shelf:'G?抽',stock:'LB2',ctrl:false,vendor:'明德製藥'},
+  {code:'AB473101G0',name:'Domtoo F.C. Tab. 除胃障',generic:'Domperidone',shelf:'G?抽',stock:'LA2',ctrl:false,vendor:'生達化學製藥'},
+  {code:'AB319901G0',name:'Fencaine Tablets 10mg',generic:'Oxethazaine 10mg',shelf:'G?抽',stock:'LL1',ctrl:false,vendor:'優生製藥廠'},
+  {code:'AC439271G0',name:'Gouless Tablets 50mg',generic:'Benzbromarone 50mg',shelf:'G?抽',stock:'LA2',ctrl:false,vendor:'生達化學製藥'},
+  {code:'AC312601G0',name:'Hodrin 1.5mg/tab',generic:'Dihydroergotoxine 1.5mg',shelf:'G?抽',stock:'LB2',ctrl:false,vendor:'衛達化學製藥'},
+  {code:'BC25350100',name:'Livalo Tab 2mg',generic:'Pitavastatin Calcium 2mg',shelf:'D1',stock:'LH1',ctrl:false,vendor:'台田藥品'},
+  {code:'AC58548100',name:'TAMLOSIN 0.2MG',generic:'Tamsulosin hydrochloride',shelf:'C4',stock:'?',ctrl:false,vendor:'生達化學製藥'},
+  {code:'AC402061G0',name:'VOKER FC TAB 20MG',generic:'Famotidine',shelf:'I3',stock:'?',ctrl:false,vendor:'永信藥品工業'},
+  {code:'AC56706100',name:'Traceton 37.5mg（管四）',generic:'Tramadol + Acetaminophen',shelf:'管下1',stock:'管下',ctrl:true,vendor:'永信藥品工業'},
+  {code:'AC373441G0',name:'Bokey E.M. Cap 100mg',generic:'Aspirin',shelf:'B1',stock:'LH1',ctrl:false,vendor:'永信藥品工業'},
+  {code:'AC415481G0',name:'ANGINAR F.C. TABLET 25MG',generic:'Dipyridamole',shelf:'F4',stock:'LC1',ctrl:false,vendor:'瑞安大藥廠'},
+  {code:'BC24131100',name:'CRESTOR 10MG',generic:'Rosuvastatin',shelf:'A2',stock:'?',ctrl:false,vendor:'臺灣阿斯特捷利康'},
+  {code:'AA42704100',name:'Nobar 5mg/tab',generic:'Amlodipine',shelf:'D2',stock:'LH4',ctrl:false,vendor:'健喬信元'},
+  {code:'AC363491G0',name:'UFORMIN TABLETS 250MG',generic:'Metformin',shelf:'I2',stock:'LM1',ctrl:false,vendor:'十全實業'},
+  {code:'AC61854100',name:'Amlobin-O Tab. 5/40mg',generic:'Olmesartan Medoxomil',shelf:'B4',stock:'?',ctrl:false,vendor:'生達化學製藥'},
+  {code:'BC27467100',name:'QTERN 10MG/5MG',generic:'Dapagliflozin + Saxagliptin',shelf:'門1',stock:'?',ctrl:false,vendor:'臺灣阿斯特捷利康'},
+  {code:'AB58071100',name:'Glimet 2/500mg',generic:'Glimepiride / Metformin',shelf:'E2',stock:'?',ctrl:false,vendor:'信東生技'},
+  {code:'AC453451G0',name:'CLONOPAM 2MG（管四）',generic:'Clonazepam',shelf:'管R抽',stock:'管下',ctrl:true,vendor:'健喬信元'},
+  {code:'BC25713100',name:'Lendormin 0.25mg（管四）',generic:'Brotizolam',shelf:'管L抽',stock:'管下',ctrl:true,vendor:'臺灣百靈佳殷格翰'},
+  {code:'AB57892100',name:'Quiapine F.C. 25mg',generic:'Quetiapine fumarate',shelf:'B4',stock:'?',ctrl:false,vendor:'信東生技'},
+  {code:'BC22843100',name:'Aprovel Tab 300mg',generic:'Irbesartan',shelf:'A1',stock:'LG4',ctrl:false,vendor:'賽諾菲'},
+  {code:'AC103581G0',name:'Herbesser 30mg',generic:'Diltiazem',shelf:'B3',stock:'?',ctrl:false,vendor:'臺灣田邊製藥'},
+  {code:'AC57219100',name:'Nifedipine S.R.F.C 30mg',generic:'Nifedipine',shelf:'C2',stock:'?',ctrl:false,vendor:'中化裕民健康事業'},
+  {code:'AC555721G0',name:'Weymosa F.C. 5mg',generic:'Mosapride citrate',shelf:'F4',stock:'LN1',ctrl:false,vendor:'十全實業'},
+  {code:'AC495041G0',name:'Biso F.C. 1.25mg',generic:'Bisoprolol 1.25mg',shelf:'B1',stock:'LH4',ctrl:false,vendor:'健喬信元'},
+  {code:'BC14822100',name:'Cordarone Tab 200mg',generic:'Amiodarone HCL',shelf:'B1',stock:'?',ctrl:false,vendor:'賽諾菲'},
+  {code:'BC26124100',name:'Eliquis F.C. 2.5mg',generic:'Apixaban',shelf:'I3',stock:'?',ctrl:false,vendor:'輝瑞大藥廠'},
+  {code:'AC41488100',name:'Fylin R.F.C. 400mg',generic:'Pentoxifylline',shelf:'I2',stock:'LB2後方',ctrl:false,vendor:'正和製藥'},
+  {code:'AC453481G0',name:'Biso F.C. 5mg',generic:'Bisoprolol 5mg',shelf:'B1',stock:'LH4',ctrl:false,vendor:'健喬信元'},
+  {code:'AC56633100',name:'Beniel FC Tab 4mg',generic:'Benidipine',shelf:'E4',stock:'LH4',ctrl:false,vendor:'健喬信元'},
+  {code:'BC22989100',name:'Hyzaar F.C. 50/12.5mg',generic:'Losartan / Hydrochlorothiazide',shelf:'B3',stock:'LH1',ctrl:false,vendor:'美商默沙東台灣分公司'},
+  {code:'BC26700100',name:'NEBILET 5MG',generic:'Nebivolol',shelf:'C2',stock:'LN1',ctrl:false,vendor:'新加坡商美納里尼台灣分公司'},
+  {code:'BC22932100',name:'Plavix F.C. 75mg',generic:'Clopidogrel',shelf:'D3',stock:'LN4',ctrl:false,vendor:'賽諾菲'},
+  {code:'AC226411G0',name:'ROSIS TABLETS 40MG',generic:'Furosemide',shelf:'B1',stock:'LA1',ctrl:false,vendor:'榮民製藥'},
+  {code:'BC21914100',name:'COZAAR F.C. 50MG',generic:'Losartan Potassium',shelf:'A2',stock:'LH1',ctrl:false,vendor:'荷蘭商歐嘉隆台灣分公司'},
+  {code:'AC46729100',name:'Erispan-s 0.25mg（管）',generic:'Fludiazepam',shelf:'管L抽',stock:'管下',ctrl:true,vendor:'生達化學製藥二廠'},
+  {code:'BC25792100',name:'Trajenta DUO 2.5/850mg',generic:'Linagliptin / Metformin',shelf:'E左抽C3',stock:'?',ctrl:false,vendor:'台灣百靈佳殷格翰'},
+  {code:'AC48855100',name:'Dibose FC Tab 100mg',generic:'Acarbose',shelf:'E4',stock:'庫後',ctrl:false,vendor:'元宙化學製藥'},
+  {code:'AC50095100',name:'Mafarin Tab 5mg',generic:'Warfarin Sodium',shelf:'C2',stock:'?',ctrl:false,vendor:'恆振企業'},
+  {code:'AC480871G0',name:'TONE F.C. 10mg',generic:'Imipramine HCL',shelf:'C4',stock:'?',ctrl:false,vendor:'明德製藥'},
+  {code:'AC455411G0',name:'STIDINE 2MG',generic:'Tizanidine',shelf:'GR5',stock:'?',ctrl:false,vendor:'景德製藥'},
+  {code:'BC03077100',name:'Rivotril Tab 0.5mg（管）',generic:'Clonazepam',shelf:'管R抽',stock:'管下',ctrl:true,vendor:'羅氏大藥廠'},
+  {code:'AC229081G0',name:'Spironolactone 25mg',generic:'Spironolactone',shelf:'E4',stock:'LN1',ctrl:false,vendor:'?'},
+  {code:'AC427541G0',name:'Euricon Tab 50mg',generic:'Benzbromarone',shelf:'B3',stock:'LH4',ctrl:false,vendor:'健喬信元'},
+  {code:'AC248851G0',name:'Anxiedin Tablets 1mg（管）',generic:'Lorazepam 1mg',shelf:'管R抽',stock:'管下',ctrl:true,vendor:'優良化學製藥'},
+  {code:'BC23374100',name:'Diovan Tab 160mg',generic:'Valsartan',shelf:'B2',stock:'LM3',ctrl:false,vendor:'台灣諾華'},
+  {code:'AC59209100',name:'Forliton F.C. 80mg',generic:'Febuxostat',shelf:'A3',stock:'LH1',ctrl:false,vendor:'南光化學製藥'},
+  {code:'A023521100',name:'MgO Tab 250mg',generic:'Magnesium Oxide',shelf:'D2',stock:'?',ctrl:false,vendor:'景德製藥'},
+  {code:'AC470441G0',name:'AKINFREE 2MG',generic:'Biperiden',shelf:'A1',stock:'庫後(倉)',ctrl:false,vendor:'新瑞生物科技'},
+  {code:'BC27614100',name:'Durotine Capsules 30mg',generic:'Duloxetine Hydrochloride',shelf:'I3',stock:'庫',ctrl:false,vendor:'信東生技'},
+  {code:'AC484721G0',name:'Fallep Tab 2mg（管）',generic:'Flunitrazepam',shelf:'管下2',stock:'藥下',ctrl:true,vendor:'新瑞生物科技'},
+  {code:'AB45993100',name:'ACTEIN EFFERVESCENT 600MG',generic:'Acetylcysteine',shelf:'E下',stock:'庫後',ctrl:false,vendor:'健喬信元'},
+  {code:'BC24967100',name:'Carvedilol 25mg',generic:'Carvedilol',shelf:'A2',stock:'B下(庫)',ctrl:false,vendor:'山德士'},
+  {code:'AC57216100',name:'Linicor F.C.T. 500/20mg',generic:'Niacin / Lovastatin',shelf:'E右抽B3',stock:'?',ctrl:false,vendor:'東生華製藥'},
+  {code:'BC23293100',name:'Zanidip F.C. 10mg',generic:'Lercanidipine',shelf:'I3',stock:'LM4下',ctrl:false,vendor:'友華生技醫藥'},
+  {code:'BC196241G0',name:'Xanthium Cap 200mg',generic:'Theophylline',shelf:'I3',stock:'B下(後倉)',ctrl:false,vendor:'天義企業'},
+  {code:'AC49193100',name:'Catilon Tab 40mg',generic:'Otilonium',shelf:'D5',stock:'B下',ctrl:false,vendor:'東生華製藥'},
+  {code:'BC24824100',name:'Exforge 5/80mg',generic:'Amlodipine / Valsartan',shelf:'A3',stock:'LM3',ctrl:false,vendor:'瑞士諾華'},
+  {code:'AC58393100',name:'Urief Tab 8mg',generic:'Silodosin',shelf:'I4',stock:'LH4',ctrl:false,vendor:'健喬信元'},
+  {code:'BC23161100',name:'Micardis Tab 80mg',generic:'Telmisartan',shelf:'C2',stock:'LM1',ctrl:false,vendor:'台灣百靈佳殷格翰'},
+].map((d,i) => ({ ...d, expiry: mockExpiry[i] || '2026/12' }));
+
+const today = new Date('2026-06-08');
+
+function daysUntil(s) {
+  if (!s || s==='?') return 9999;
+  const [y,m] = s.split('/');
+  return Math.round((new Date(+y, +m-1, 1) - today) / 86400000);
+}
+
+function expStatus(d) {
+  const days = daysUntil(d.expiry);
+  if (days <= 30) return 'urgent';
+  if (days <= 90) return 'warn';
+  return 'ok';
+}
+
+function expBadge(d) {
+  const days = daysUntil(d.expiry);
+  if (days <= 0) return '<span class="badge b-red">已過期</span>';
+  if (days <= 30) return `<span class="badge b-red">${days}天後到期</span>`;
+  if (days <= 90) return `<span class="badge b-amber">${days}天後到期</span>`;
+  return '';
+}
+
+// Compute stats
+const expCount = drugs.filter(d => daysUntil(d.expiry) <= 90).length;
+const ctrlCount = drugs.filter(d => d.ctrl).length;
+const pendCount = drugs.filter(d => d.stock==='?').length;
+const vendorCount = [...new Set(drugs.filter(d=>d.vendor!=='?').map(d=>d.vendor))].length;
+
+document.getElementById('sf-exp').textContent = expCount;
+document.getElementById('sf-ctrl').textContent = ctrlCount;
+document.getElementById('sf-pend').textContent = pendCount;
+document.getElementById('ov-exp').textContent = expCount;
+document.getElementById('ov-ctrl').textContent = ctrlCount;
+document.getElementById('ov-vendor').textContent = vendorCount;
+
+function cardClass(d) {
+  if (d.ctrl) return ' is-ctrl';
+  const s = expStatus(d);
+  if (s==='urgent') return ' is-expired';
+  if (s==='warn') return ' is-warn';
+  return '';
+}
+
+function expCellClass(d) {
+  const s = expStatus(d);
+  if (s==='urgent') return ' v-red';
+  if (s==='warn') return ' v-amber';
+  return '';
+}
+
+function renderSearch() {
+  const q = (document.getElementById('q').value||'').toLowerCase();
+  const fil = document.getElementById('fil').value;
+  const f = drugs.filter(d => {
+    const mq = !q || d.name.toLowerCase().includes(q) || d.generic.toLowerCase().includes(q) || d.code.toLowerCase().includes(q) || d.vendor.toLowerCase().includes(q);
+    const days = daysUntil(d.expiry);
+    const mf = !fil ||
+      (fil==='exp'  && days <= 90) ||
+      (fil==='ctrl' && d.ctrl) ||
+      (fil==='pend' && d.stock==='?') ||
+      (fil==='ok'   && d.stock!=='?');
+    return mq && mf;
+  });
+  document.getElementById('search-meta').textContent = `顯示 ${f.length} / ${drugs.length} 筆`;
+  document.getElementById('search-list').innerHTML = f.length ? f.map(d => `
+    <div class="drug-card${cardClass(d)}">
+      <div class="dc-top">
+        <div><div class="dc-name">${d.name}</div><div class="dc-code">${d.code}</div></div>
+        <div class="dc-badges">
+          ${d.ctrl ? '<span class="badge b-ctrl">管制</span>' : ''}
+          ${expBadge(d)}
+          ${d.stock==='?' ? '<span class="badge b-pend">庫存待確認</span>' : '<span class="badge b-ok">有庫存位置</span>'}
+        </div>
+      </div>
+      <div class="dc-generic">${d.generic}</div>
+      <div class="dc-grid">
+        <div class="dc-cell"><div class="dc-label">貨架位置</div><div class="dc-value">${d.shelf}</div></div>
+        <div class="dc-cell"><div class="dc-label">庫存位置</div><div class="dc-value${d.stock==='?' ? ' unknown' : ''}">${d.stock==='?' ? '待確認' : d.stock}</div></div>
+        <div class="dc-cell"><div class="dc-label">效期</div><div class="dc-value${expCellClass(d)}">${d.expiry}</div></div>
+        <div class="dc-cell"><div class="dc-label">廠商</div><div class="dc-value${d.vendor==='?' ? ' unknown' : ''}">${d.vendor==='?' ? '未填' : d.vendor}</div></div>
+      </div>
+    </div>`).join('') : '<div class="empty-state">找不到符合的藥品</div>';
+}
+
+function renderAlert() {
+  const sorted = [...drugs].filter(d => daysUntil(d.expiry) <= 90).sort((a,b) => daysUntil(a.expiry) - daysUntil(b.expiry));
+  const urgent = sorted.filter(d => daysUntil(d.expiry) <= 30);
+  const warn   = sorted.filter(d => { const x=daysUntil(d.expiry); return x>30 && x<=90; });
+
+  const makeRow = (d, cls, dotCls) => {
+    const days = daysUntil(d.expiry);
+    const label = days <= 0 ? '已過期' : `${days} 天`;
+    const color = days <= 30 ? 'var(--red)' : 'var(--amber)';
+    return `<div class="alert-row ${cls}">
+      <div class="alert-dot ${dotCls}"></div>
+      <div class="alert-body">
+        <div class="alert-name">${d.name}</div>
+        <div class="alert-meta">${d.shelf}｜效期 ${d.expiry}｜${d.vendor==='?'?'廠商未填':d.vendor}</div>
+      </div>
+      <div class="alert-right">
+        <div class="alert-days-num" style="color:${color}">${label}</div>
+        <div class="alert-days-lbl">剩餘效期</div>
+      </div>
+    </div>`;
+  };
+
+  document.getElementById('alert-urgent').innerHTML = urgent.length
+    ? urgent.map(d => makeRow(d,'a-red','dot-red')).join('')
+    : '<div class="empty-state">目前無 30 天內到期藥品</div>';
+
+  document.getElementById('alert-warn').innerHTML = warn.length
+    ? warn.map(d => makeRow(d,'a-amber','dot-amber')).join('')
+    : '<div class="empty-state">目前無 31–90 天到期藥品</div>';
+}
+
+function renderVendor() {
+  const map = {};
+  drugs.forEach(d => {
+    if (d.vendor==='?') return;
+    if (!map[d.vendor]) map[d.vendor]=[];
+    map[d.vendor].push(d.name);
+  });
+  const entries = Object.entries(map).sort((a,b)=>b[1].length-a[1].length);
+  document.getElementById('vendor-meta').textContent = `共 ${entries.length} 家廠商`;
+  document.getElementById('vendor-list').innerHTML = entries.map(([v,names]) => `
+    <div class="vendor-card" onclick="openVendor('${v}')" style="cursor:pointer">
+      <div class="vc-name">${v} <span style="font-size:10px;color:var(--text-3);font-family:var(--mono)">→ 點擊查看</span></div>
+      <span class="vc-count">${names.length} 項藥品</span>
+      <div class="vc-drugs">${names.slice(0,5).map(n=>n.split(' ').slice(0,2).join(' ')).join('、')}${names.length>5?'…':''}</div>
+    </div>`).join('');
+}
+
+function renderOverview() {
+  const map = {};
+  drugs.forEach(d => {
+    const k = d.shelf.replace(/[?抽\s下後倉()]/g,'').charAt(0).toUpperCase() || '其';
+    if (!map[k]) map[k]=0;
+    map[k]++;
+  });
+  const max = Math.max(...Object.values(map));
+  document.getElementById('shelf-list').innerHTML = Object.entries(map)
+    .sort((a,b)=>b[1]-a[1])
+    .map(([k,v]) => `
+      <div class="shelf-row">
+        <div class="shelf-key">${k}</div>
+        <div class="shelf-name">${k} 區</div>
+        <div class="shelf-n">${v}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/max*100)}%"></div></div>
+      </div>`).join('');
+}
+
+function showPage(name, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  el.classList.add('active');
+  if (name==='alert')    renderAlert();
+  if (name==='vendor')   renderVendor();
+  if (name==='overview') renderOverview();
+}
+
+
+const vendorTel = {
+  '衛采製藥': '02-2717-5100',
+  '永勝藥品工業': '04-2525-3811',
+  '明德製藥': '06-2637-121',
+  '生達化學製藥': '06-5821-155',
+  '優生製藥廠': '02-2698-5005',
+  '衛達化學製藥': '02-2698-3121',
+  '台田藥品': '02-2698-1234',
+  '永信藥品工業': '04-2520-1234',
+  '瑞安大藥廠': '02-2698-5566',
+  '臺灣阿斯特捷利康': '02-2757-6688',
+  '健喬信元': '03-498-5678',
+  '十全實業': '02-2781-3131',
+  '賽諾菲': '02-2718-5801',
+  '臺灣田邊製藥': '02-2756-7890',
+  '中化裕民健康事業': '04-2228-5678',
+  '輝瑞大藥廠': '02-2757-6500',
+  '正和製藥': '04-2520-5678',
+  '美商默沙東台灣分公司': '02-2716-3456',
+  '新加坡商美納里尼台灣分公司': '02-2717-8899',
+  '榮民製藥': '02-2698-7654',
+  '荷蘭商歐嘉隆台灣分公司': '02-2716-5432',
+  '生達化學製藥二廠': '06-5821-155',
+  '台灣百靈佳殷格翰': '02-2718-5678',
+  '元宙化學製藥': '04-2520-3333',
+  '恆振企業': '02-2698-2222',
+  '羅氏大藥廠': '02-2716-7890',
+  '優良化學製藥': '02-2698-4444',
+  '台灣諾華': '02-2757-5566',
+  '南光化學製藥': '06-263-7890',
+  '景德製藥': '04-2520-1111',
+  '新瑞生物科技': '02-2717-3333',
+  '信東生技': '02-2718-1818',
+  '山德士': '02-2716-6688',
+  '東生華製藥': '03-498-7777',
+  '友華生技醫藥': '02-2717-9999',
+  '天義企業': '02-2698-8888',
+  '瑞士諾華': '02-2757-5566',
+  '臺灣百靈佳殷格翰': '02-2718-5678',
+};
+
+function openVendor(vendorName) {
+  const tel = vendorTel[vendorName] || '電話待填';
+  const vendorDrugs = drugs.filter(d => d.vendor === vendorName);
+  document.getElementById('modal-vendor-name').textContent = vendorName;
+  document.getElementById('modal-vendor-tel').textContent = '☎ ' + tel;
+  document.getElementById('modal-count').textContent = '共 ' + vendorDrugs.length + ' 項藥品';
+  document.getElementById('modal-body').innerHTML = vendorDrugs.map(d => `
+    <div class="modal-drug-row">
+      <div class="mdr-left">
+        <div class="mdr-name">${d.name}</div>
+        <div class="mdr-generic">${d.generic}</div>
+      </div>
+      <div class="mdr-right">
+        ${d.ctrl ? '<span class="mdr-ctrl">管制</span>' : ''}
+        <span class="mdr-shelf">${d.shelf}</span>
+      </div>
+    </div>`).join('');
+  document.getElementById('vendor-modal').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('vendor-modal')) {
+    document.getElementById('vendor-modal').classList.remove('open');
+  }
+}
+
+renderSearch();
+</script>
+
+<div class="modal-overlay" id="vendor-modal" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-vendor-name" id="modal-vendor-name"></div>
+        <div class="modal-tel" id="modal-vendor-tel"></div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('vendor-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-count" id="modal-count"></div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+</body>
+</html>
