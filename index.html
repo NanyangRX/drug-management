@@ -236,11 +236,95 @@ body { background: var(--bg); font-family: var(--sans); color: var(--text-1); mi
   padding: 2px 7px;
   border-radius: 4px;
 }
+
+/* Mobile hamburger menu */
+.hamburger-btn {
+  display: none;
+  position: fixed;
+  top: 14px;
+  left: 14px;
+  z-index: 200;
+  background: #1A4A2A;
+  border: 1.5px solid #4A8A60;
+  border-radius: 8px;
+  padding: 6px 12px;
+  cursor: pointer;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.hamburger-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.15em;
+  font-family: var(--sans);
+  white-space: nowrap;
+}
+
+.hamburger-icon {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.hamburger-icon span {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: #fff;
+  border-radius: 1px;
+  transition: all 0.2s;
+}
+
+.overlay-bg {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 150;
+}
+
+.overlay-bg.open { display: block; }
+
+@media (max-width: 680px) {
+  .hamburger-btn { display: flex; }
+
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.22s ease;
+    z-index: 160;
+  }
+
+  .sidebar.open { transform: translateX(0); }
+
+  .main {
+    margin-left: 0;
+    padding: 70px 18px 24px;
+  }
+
+  .ov-stats { grid-template-columns: repeat(2, 1fr); }
+  .vendor-grid { grid-template-columns: 1fr; }
+  .dc-grid { grid-template-columns: repeat(2, 1fr); }
+  .card-row2 { grid-template-columns: repeat(2, 1fr); }
+}
 </style>
 </head>
 <body>
 
-<aside class="sidebar">
+
+<button class="hamburger-btn" id="hamburger-btn" onclick="toggleMenu()" aria-label="開啟選單">
+  <div class="hamburger-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+  <span class="hamburger-label">南陽藥局</span>
+</button>
+<div class="overlay-bg" id="overlay-bg" onclick="closeMenu()"></div>
+<aside class="sidebar" id="sidebar">
   <div class="logo">
     <div class="logo-pharmacy-name">南陽藥局</div>
     <div class="logo-divider"></div>
@@ -640,6 +724,26 @@ function closeModal(e) {
     document.getElementById('vendor-modal').classList.remove('open');
   }
 }
+
+
+function toggleMenu() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('overlay-bg');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('open');
+}
+
+function closeMenu() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay-bg').classList.remove('open');
+}
+
+// Close menu when nav item is clicked on mobile
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => {
+    if (window.innerWidth <= 680) closeMenu();
+  });
+});
 
 renderSearch();
 </script>
