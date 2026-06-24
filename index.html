@@ -3,786 +3,661 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>南陽藥局 · 藥品管理系統</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>南陽藥局 · 商品管理系統</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #F2F0EB;
-  --surface: #FAFAF7;
-  --border: #E0DDD5;
-  --border-strong: #C8C4BA;
-  --text-1: #18180F;
-  --text-2: #5C5950;
-  --text-3: #9E9B93;
-  --accent: #1C4A10;
-  --accent-bg: #EAF2E5;
-  --red: #B83228;
-  --red-bg: #FAEAE8;
-  --amber: #A05C08;
-  --amber-bg: #FEF2E0;
-  --purple: #5A3A8A;
-  --purple-bg: #F2EDF8;
-  --mono: 'DM Mono', monospace;
-  --sans: 'Noto Sans TC', sans-serif;
-  --radius: 10px;
-  --radius-sm: 6px;
+  --bg: #F2F0EB; --surface: #FAFAF7; --border: #E0DDD5; --border-strong: #C8C4BA;
+  --text-1: #18180F; --text-2: #5C5950; --text-3: #9E9B93;
+  --accent: #1C4A10; --accent-bg: #EAF2E5;
+  --red: #B83228; --red-bg: #FAEAE8;
+  --amber: #A05C08; --amber-bg: #FEF2E0;
+  --green: #1A5C30;
+  --mono: 'DM Mono', monospace; --sans: 'Noto Sans TC', sans-serif;
+  --radius: 10px; --radius-sm: 6px;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); font-family: var(--sans); color: var(--text-1); min-height: 100vh; display: flex; font-size: 14px; }
 
-/* Sidebar */
-.sidebar { width: 210px; min-height: 100vh; background: var(--text-1); display: flex; flex-direction: column; position: fixed; top:0; left:0; z-index:10; }
-.logo { padding: 28px 22px 24px; border-bottom: 1px solid rgba(255,255,255,0.07); }
-.logo-pharmacy-name {
-  font-size: 16px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 0.22em;
-  font-family: var(--sans);
-  margin-bottom: 8px;
-  background: #1A4A2A;
-  border: 1.5px solid #4A8A60;
-  border-radius: 6px;
-  padding: 6px 14px;
-  display: inline-block;
-  text-shadow: none;
-}
-.logo-divider {
-  width: 28px;
-  height: 2px;
-  background: #7ABF65;
-  border-radius: 1px;
-  margin-bottom: 10px;
-  opacity: 0.7;
-}
-.logo-title { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: 0.06em; }
-.logo-sub { font-size: 10px; color: rgba(255,255,255,0.3); font-family: var(--mono); margin-top: 4px; }
-.nav { padding: 18px 0; flex: 1; position: relative; z-index: 1; }
-.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 22px; font-size: 12.5px; color: rgba(255,255,255,0.42); cursor: pointer; border-left: 2px solid transparent; transition: all 0.12s; user-select: none; }
+.sidebar { width: 210px; min-height: 100vh; background: #0D2818; display: flex; flex-direction: column; position: fixed; top:0; left:0; z-index:10; }
+.logo { padding: 22px 20px 18px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.logo-pharmacy { font-size: 15px; font-weight: 700; color: #fff; letter-spacing: 0.18em; background: #1A4A2A; border: 1.5px solid #4A8A60; border-radius: 6px; padding: 5px 12px; display: inline-block; margin-bottom: 8px; }
+.logo-divider { width: 24px; height: 2px; background: #5DBF7A; border-radius: 1px; margin-bottom: 8px; opacity: 0.7; }
+.logo-title { font-size: 11px; color: rgba(255,255,255,0.4); font-family: var(--mono); }
+.nav { padding: 14px 0; flex: 1; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 20px; font-size: 12.5px; color: rgba(255,255,255,0.42); cursor: pointer; border-left: 2px solid transparent; transition: all 0.12s; user-select: none; }
 .nav-item:hover { color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.04); }
-.nav-item.active { color: #fff; border-left-color: #7ABF65; background: rgba(255,255,255,0.07); }
-.nav-icon { font-size: 15px; width: 18px; text-align: center; }
-.sidebar-footer { padding: 20px 22px; border-top: 1px solid rgba(255,255,255,0.07); }
-.sf-row { margin-bottom: 13px; }
+.nav-item.active { color: #fff; border-left-color: #5DBF7A; background: rgba(255,255,255,0.07); }
+.nav-icon { font-size: 14px; width: 18px; text-align: center; }
+.sidebar-footer { padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.07); }
+.sf-row { margin-bottom: 11px; }
 .sf-row:last-child { margin-bottom: 0; }
-.sf-num { font-size: 21px; font-weight: 600; color: #fff; font-family: var(--mono); line-height: 1; }
+.sf-num { font-size: 20px; font-weight: 600; color: #fff; font-family: var(--mono); line-height: 1; }
 .sf-lbl { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 3px; }
 
-/* Main */
-.main { margin-left: 210px; flex: 1; padding: 36px 40px; min-height: 100vh; }
-.page-head { margin-bottom: 26px; }
-.page-title { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; }
+.main { margin-left: 210px; flex: 1; padding: 34px 38px; min-height: 100vh; }
+.page-head { margin-bottom: 22px; }
+.page-title { font-size: 20px; font-weight: 600; }
 .page-sub { font-size: 12px; color: var(--text-3); margin-top: 4px; font-family: var(--mono); }
 .page { display: none; }
 .page.active { display: block; }
 
-/* Controls */
-.controls { display: flex; gap: 8px; margin-bottom: 12px; }
-.search-input { flex: 1; padding: 9px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--sans); color: var(--text-1); outline: none; transition: border-color 0.12s; }
-.search-input:focus { border-color: var(--border-strong); }
-.search-input::placeholder { color: var(--text-3); }
-.filter-select { padding: 9px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; font-family: var(--sans); color: var(--text-1); outline: none; cursor: pointer; }
-.result-meta { font-size: 11px; color: var(--text-3); font-family: var(--mono); margin-bottom: 12px; }
+/* Checkout */
+.checkout-layout { display: grid; grid-template-columns: 1fr 310px; gap: 14px; align-items: start; }
+.scan-area { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; }
+.scan-row { display: flex; gap: 8px; }
+.scan-input { flex: 1; padding: 9px 13px; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--mono); color: var(--text-1); outline: none; transition: border-color 0.12s; }
+.scan-input:focus { border-color: var(--accent); }
+.scan-input::placeholder { color: var(--text-3); font-size: 12px; }
+.scan-btn { padding: 9px 16px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 13px; font-family: var(--sans); font-weight: 500; cursor: pointer; white-space: nowrap; }
+.scan-btn:hover { background: #255E36; }
+.scan-hint { font-size: 11px; color: var(--text-3); font-family: var(--mono); margin-top: 7px; }
+.cart-table { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 10px; }
+.cart-header { display: grid; grid-template-columns: 1fr 90px 78px 28px; gap: 8px; padding: 9px 14px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 10px; font-weight: 600; color: var(--text-3); font-family: var(--mono); letter-spacing: 0.06em; }
+.cart-row { display: grid; grid-template-columns: 1fr 90px 78px 28px; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--border); align-items: center; }
+.cart-row:last-child { border-bottom: none; }
+.cart-row:hover { background: var(--bg); }
+.cart-name { font-size: 12.5px; font-weight: 500; }
+.cart-code { font-size: 10px; color: var(--text-3); font-family: var(--mono); margin-top: 1px; }
+.cart-qty-ctrl { display: flex; align-items: center; gap: 4px; justify-content: center; }
+.qty-btn { width: 22px; height: 22px; border-radius: 4px; background: var(--bg); border: 1px solid var(--border); cursor: pointer; font-size: 14px; line-height: 1; color: var(--text-2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.qty-btn:hover { background: var(--border); }
+.qty-input { width: 36px; padding: 3px 4px; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; font-size: 12px; font-family: var(--mono); color: var(--text-1); text-align: center; outline: none; -moz-appearance: textfield; }
+.qty-input::-webkit-outer-spin-button, .qty-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+.qty-input:focus { border-color: var(--accent); }
+.cart-price { font-size: 12px; font-weight: 500; font-family: var(--mono); text-align: right; }
+.cart-del { width: 22px; height: 22px; border-radius: 4px; background: var(--red-bg); border: none; cursor: pointer; color: var(--red); font-size: 13px; display: flex; align-items: center; justify-content: center; }
+.cart-del:hover { background: #F5D0CC; }
+.cart-empty { padding: 2.5rem; text-align: center; color: var(--text-3); font-size: 13px; }
+.summary-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; position: sticky; top: 34px; }
+.summary-title { font-size: 11px; font-weight: 600; color: var(--text-2); margin-bottom: 14px; font-family: var(--mono); letter-spacing: 0.08em; }
+.summary-row { display: flex; justify-content: space-between; margin-bottom: 7px; font-size: 13px; }
+.summary-row.total { font-size: 18px; font-weight: 700; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); font-family: var(--mono); }
+.change-section { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--border); }
+.change-label { font-size: 11px; color: var(--text-3); margin-bottom: 6px; font-family: var(--mono); }
+.change-input { width: 100%; padding: 9px 12px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 16px; font-family: var(--mono); color: var(--text-1); outline: none; text-align: center; margin-bottom: 7px; }
+.change-result { text-align: center; font-size: 13px; font-family: var(--mono); color: var(--text-2); min-height: 20px; }
+.change-result.positive { color: var(--green); font-weight: 600; font-size: 15px; }
+.clear-btn { width: 100%; padding: 11px; background: #0D2818; color: #fff; border: none; border-radius: var(--radius-sm); font-size: 13px; font-family: var(--sans); font-weight: 600; cursor: pointer; margin-top: 12px; letter-spacing: 0.05em; }
+.clear-btn:hover { background: #1A4A2A; }
 
-/* Drug card */
-.drug-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 7px; transition: border-color 0.12s, box-shadow 0.12s; }
-.drug-card:hover { border-color: var(--border-strong); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-.drug-card.is-ctrl { border-left: 3px solid var(--purple); }
-.drug-card.is-expired { border-left: 3px solid var(--red); }
-.drug-card.is-warn { border-left: 3px solid var(--amber); }
-.dc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 9px; }
-.dc-name { font-size: 13.5px; font-weight: 500; }
-.dc-code { font-size: 10px; color: var(--text-3); font-family: var(--mono); margin-top: 2px; }
-.dc-badges { display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end; }
-.badge { font-size: 10px; padding: 2px 8px; border-radius: 4px; font-weight: 500; font-family: var(--mono); white-space: nowrap; }
-.b-ctrl { background: var(--purple-bg); color: var(--purple); }
-.b-pend { background: var(--amber-bg); color: var(--amber); }
-.b-ok { background: var(--accent-bg); color: var(--accent); }
-.b-red { background: var(--red-bg); color: var(--red); }
-.b-amber { background: var(--amber-bg); color: var(--amber); }
-.dc-generic { font-size: 11px; color: var(--text-2); margin-bottom: 9px; }
-.dc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-.dc-cell { background: var(--bg); border-radius: var(--radius-sm); padding: 6px 9px; }
-.dc-label { font-size: 10px; color: var(--text-3); margin-bottom: 2px; }
-.dc-value { font-size: 12px; font-weight: 500; font-family: var(--mono); }
-.dc-value.unknown { color: var(--text-3); font-weight: 400; font-family: var(--sans); }
-.dc-value.v-red { color: var(--red); }
-.dc-value.v-amber { color: var(--amber); }
-
-/* Alert page */
-.alert-section { margin-bottom: 28px; }
-.section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); font-family: var(--mono); margin-bottom: 10px; }
-.alert-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 13px 16px; margin-bottom: 6px; display: flex; align-items: center; gap: 14px; transition: border-color 0.12s; }
-.alert-row:hover { border-color: var(--border-strong); }
+/* Alert */
+.alert-section { margin-bottom: 26px; }
+.section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); font-family: var(--mono); margin-bottom: 9px; }
+.alert-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 6px; display: flex; align-items: center; gap: 12px; }
 .alert-row.a-red { background: var(--red-bg); border-color: #F0C4C0; }
 .alert-row.a-amber { background: var(--amber-bg); border-color: #F5DFB8; }
-.alert-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.alert-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .dot-red { background: var(--red); }
 .dot-amber { background: var(--amber); }
 .alert-body { flex: 1; }
 .alert-name { font-size: 13px; font-weight: 500; }
 .alert-meta { font-size: 11px; color: var(--text-2); margin-top: 2px; font-family: var(--mono); }
 .alert-right { text-align: right; flex-shrink: 0; }
-.alert-days-num { font-size: 18px; font-weight: 600; font-family: var(--mono); }
+.alert-days-num { font-size: 17px; font-weight: 600; font-family: var(--mono); }
 .alert-days-lbl { font-size: 10px; color: var(--text-3); }
 
-/* Vendor */
+/* Search */
+.controls { display: flex; gap: 8px; margin-bottom: 11px; }
+.search-input { flex: 1; padding: 9px 13px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--sans); color: var(--text-1); outline: none; }
+.search-input::placeholder { color: var(--text-3); }
+.filter-select { padding: 9px 11px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; font-family: var(--sans); color: var(--text-1); outline: none; cursor: pointer; }
+.result-meta { font-size: 11px; color: var(--text-3); font-family: var(--mono); margin-bottom: 10px; }
+
+.product-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 7px; transition: border-color 0.12s; }
+.product-card:hover { border-color: var(--border-strong); }
+.pc-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.pc-name { font-size: 13px; font-weight: 500; }
+.pc-code { font-size: 10px; color: var(--text-3); font-family: var(--mono); margin-top: 2px; }
+.pc-price { font-size: 15px; font-weight: 600; font-family: var(--mono); color: var(--accent); flex-shrink: 0; }
+.pc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.pc-cell { background: var(--bg); border-radius: var(--radius-sm); padding: 5px 8px; }
+.pc-label { font-size: 10px; color: var(--text-3); margin-bottom: 1px; }
+.pc-value { font-size: 12px; font-weight: 500; font-family: var(--mono); }
+.pc-value.exp-danger { color: var(--red); }
+.pc-value.exp-warn { color: var(--amber); }
+.pc-tel { color: var(--accent); cursor: pointer; text-decoration: underline; }
+
+/* Vendor modal */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 100; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); width: 480px; max-width: 92vw; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 12px 40px rgba(0,0,0,0.18); }
+.modal-header { padding: 18px 20px 14px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; }
+.modal-vendor-name { font-size: 15px; font-weight: 600; }
+.modal-tel { font-size: 14px; font-family: var(--mono); color: var(--accent); margin-top: 4px; }
+.modal-tel a { color: var(--accent); text-decoration: none; }
+.modal-close { width: 26px; height: 26px; border-radius: 50%; background: var(--bg); border: 1px solid var(--border); font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-2); }
+.modal-count { font-size: 11px; font-family: var(--mono); color: var(--text-3); padding: 7px 20px; border-bottom: 1px solid var(--border); }
+.modal-body { overflow-y: auto; padding: 10px 14px; }
+.modal-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 8px; border-bottom: 1px solid var(--border); }
+.modal-row:last-child { border-bottom: none; }
+.modal-row:hover { background: var(--bg); border-radius: var(--radius-sm); }
+.mr-name { font-size: 13px; font-weight: 500; }
+.mr-code { font-size: 10px; color: var(--text-3); font-family: var(--mono); margin-top: 1px; }
+.mr-price { font-size: 12px; font-family: var(--mono); color: var(--accent); font-weight: 500; }
+
+/* Vendor page */
 .vendor-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
-.vendor-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; transition: border-color 0.12s; }
+.vendor-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; cursor: pointer; transition: border-color 0.12s; }
 .vendor-card:hover { border-color: var(--border-strong); }
-.vc-name { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
-.vc-count { display: inline-block; font-size: 10px; font-family: var(--mono); background: var(--accent-bg); color: var(--accent); padding: 2px 7px; border-radius: 3px; margin-bottom: 8px; }
-.vc-drugs { font-size: 11px; color: var(--text-2); line-height: 1.7; }
+.vc-name { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+.vc-tel { font-size: 13px; font-family: var(--mono); color: var(--accent); margin-bottom: 7px; }
+.vc-count { font-size: 10px; font-family: var(--mono); background: var(--accent-bg); color: var(--accent); padding: 2px 7px; border-radius: 3px; display: inline-block; margin-bottom: 7px; }
+.vc-products { font-size: 11px; color: var(--text-2); }
+
+/* Records */
+.record-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 7px; display: flex; justify-content: space-between; align-items: center; }
+.rr-time { font-size: 11px; color: var(--text-3); font-family: var(--mono); margin-bottom: 3px; }
+.rr-items { font-size: 13px; font-weight: 500; }
+.rr-total { font-size: 16px; font-weight: 600; font-family: var(--mono); color: var(--accent); }
 
 /* Overview */
-.ov-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 28px; }
+.ov-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 26px; }
 .ov-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
 .ov-num { font-size: 26px; font-weight: 600; font-family: var(--mono); line-height: 1; }
-.ov-lbl { font-size: 11px; color: var(--text-2); margin-top: 6px; }
-.shelf-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--border); }
-.shelf-key { width: 30px; height: 30px; border-radius: var(--radius-sm); background: var(--accent-bg); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: var(--accent); font-family: var(--mono); flex-shrink: 0; }
-.shelf-name { flex: 1; font-size: 12.5px; }
-.shelf-n { font-size: 12px; font-weight: 500; font-family: var(--mono); width: 28px; text-align: right; }
-.bar-track { width: 90px; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
-.bar-fill { height: 100%; background: var(--accent); border-radius: 2px; }
-.empty-state { text-align: center; padding: 3rem 1rem; color: var(--text-3); font-size: 13px; }
+.ov-lbl { font-size: 11px; color: var(--text-2); margin-top: 5px; }
 
-/* Modal */
-.modal-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  width: 560px;
-  max-width: 92vw;
-  max-height: 80vh;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.18);
-}
-.modal-header {
-  padding: 20px 22px 16px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-.modal-vendor-name { font-size: 16px; font-weight: 600; }
-.modal-tel {
-  font-size: 13px;
-  font-family: var(--mono);
-  color: var(--accent);
-  margin-top: 4px;
-}
-.modal-close {
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  font-size: 16px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  color: var(--text-2);
-  flex-shrink: 0;
-  transition: background 0.12s;
-}
-.modal-close:hover { background: var(--border); }
-.modal-count {
-  font-size: 11px;
-  font-family: var(--mono);
-  color: var(--text-3);
-  padding: 8px 22px;
-  border-bottom: 1px solid var(--border);
-}
-.modal-body { overflow-y: auto; padding: 12px 16px; }
-.modal-drug-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 10px;
-  border-radius: var(--radius-sm);
-  border-bottom: 1px solid var(--border);
-  transition: background 0.1s;
-}
-.modal-drug-row:last-child { border-bottom: none; }
-.modal-drug-row:hover { background: var(--bg); }
-.mdr-left { flex: 1; }
-.mdr-name { font-size: 13px; font-weight: 500; }
-.mdr-generic { font-size: 11px; color: var(--text-3); margin-top: 2px; }
-.mdr-right { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
-.mdr-shelf {
-  font-size: 11px;
-  font-family: var(--mono);
-  background: var(--accent-bg);
-  color: var(--accent);
-  padding: 2px 7px;
-  border-radius: 4px;
-}
-.mdr-ctrl {
-  font-size: 10px;
-  font-family: var(--mono);
-  background: var(--purple-bg);
-  color: var(--purple);
-  padding: 2px 7px;
-  border-radius: 4px;
-}
+.empty-state { text-align: center; padding: 2.5rem; color: var(--text-3); font-size: 13px; }
+.badge { font-size: 10px; padding: 2px 7px; border-radius: 4px; font-weight: 500; font-family: var(--mono); }
+.b-danger { background: var(--red-bg); color: var(--red); }
+.b-warn { background: var(--amber-bg); color: var(--amber); }
+.b-ok { background: var(--accent-bg); color: var(--accent); }
 
-/* Mobile hamburger menu */
-.hamburger-btn {
-  display: none;
-  position: fixed;
-  top: 14px;
-  left: 14px;
-  z-index: 200;
-  background: #1A4A2A;
-  border: 1.5px solid #4A8A60;
-  border-radius: 8px;
-  padding: 6px 12px;
-  cursor: pointer;
-  align-items: center;
-  gap: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-}
-
-.hamburger-label {
-  font-size: 13px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 0.15em;
-  font-family: var(--sans);
-  white-space: nowrap;
-}
-
-.hamburger-icon {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  flex-shrink: 0;
-}
-
-.hamburger-icon span {
-  display: block;
-  width: 18px;
-  height: 2px;
-  background: #fff;
-  border-radius: 1px;
-  transition: all 0.2s;
-}
-
-.overlay-bg {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
-  z-index: 250;
-}
-
+.hamburger-btn { display: none; position: fixed; top: 14px; left: 14px; z-index: 200; background: #1A4A2A; border: 1.5px solid #4A8A60; border-radius: 8px; padding: 6px 12px; cursor: pointer; align-items: center; gap: 8px; }
+.hamburger-label { font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 0.15em; font-family: var(--sans); }
+.hamburger-icon { display: flex; flex-direction: column; gap: 4px; }
+.hamburger-icon span { display: block; width: 18px; height: 2px; background: #fff; border-radius: 1px; }
+.overlay-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 250; }
 .overlay-bg.open { display: block; }
 
 @media (max-width: 680px) {
   .hamburger-btn { display: flex; }
-
-  .sidebar {
-    transform: translateX(-100%);
-    transition: transform 0.22s ease;
-    z-index: 300;
-  }
-
+  .sidebar { transform: translateX(-100%); transition: transform 0.22s; z-index: 300; }
   .sidebar.open { transform: translateX(0); }
-
-  .main {
-    margin-left: 0;
-    padding: 70px 18px 24px;
-  }
-
+  .logo { display: none; }
+  .main { margin-left: 0; padding: 68px 14px 24px; }
+  .checkout-layout { grid-template-columns: 1fr; }
   .ov-stats { grid-template-columns: repeat(2, 1fr); }
   .vendor-grid { grid-template-columns: 1fr; }
-  .dc-grid { grid-template-columns: repeat(2, 1fr); }
-  .card-row2 { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 680px) {
-  .logo { display: none; }
-}
-
-.login-overlay {
-  position: fixed;
-  inset: 0;
-  background: #0D2818;
-  z-index: 999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.login-box {
-  background: #F2F0EB;
-  border-radius: 12px;
-  padding: 32px 36px;
-  width: 300px;
-  text-align: center;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-}
-
-.login-logo {
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: 0.2em;
-  background: #1A4A2A;
-  border: 1.5px solid #4A8A60;
-  border-radius: 6px;
-  padding: 7px 18px;
-  display: inline-block;
-  margin-bottom: 6px;
-}
-
-.login-system {
-  font-size: 12px;
-  color: rgba(255,255,255,0.4);
-  font-family: var(--mono);
-  margin-bottom: 0;
-}
-
-.login-title {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-1);
-  margin-bottom: 16px;
-}
-
-.login-input {
-  width: 100%;
-  padding: 10px 14px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  font-size: 18px;
-  font-family: var(--mono);
-  text-align: center;
-  letter-spacing: 0.3em;
-  outline: none;
-  background: #fff;
-  color: var(--text-1);
-  margin-bottom: 12px;
-  transition: border-color 0.12s;
-}
-
-.login-input:focus { border-color: #1A4A2A; }
-
-.login-btn {
-  width: 100%;
-  padding: 10px;
-  background: #1A4A2A;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  font-size: 13px;
-  font-family: var(--sans);
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.12s;
-}
-
-.login-btn:hover { background: #255E36; }
-
-.login-error {
-  font-size: 12px;
-  color: var(--red);
-  margin-top: 8px;
-  min-height: 18px;
+  .pc-grid { grid-template-columns: repeat(2, 1fr); }
+  .summary-panel { position: static; }
 }
 </style>
 </head>
 <body>
 
-
-
-<div class="login-overlay" id="login-overlay">
-  <div class="login-logo">南陽藥局</div>
-  <div class="login-system" style="color:rgba(255,255,255,0.4);font-size:11px;font-family:'DM Mono',monospace;margin-top:-14px;margin-bottom:8px;">藥品管理系統</div>
-  <div class="login-box">
-    <div class="login-title">請輸入密碼進入系統</div>
-    <input class="login-input" id="login-input" type="password" placeholder="••••" maxlength="10"
-      onkeydown="if(event.key==='Enter') checkLogin()" />
-    <button class="login-btn" onclick="checkLogin()">進入</button>
-    <div class="login-error" id="login-error"></div>
-  </div>
-</div>
-
-<button class="hamburger-btn" id="hamburger-btn" onclick="toggleMenu()" aria-label="開啟選單">
-  <div class="hamburger-icon">
-    <span></span>
-    <span></span>
-    <span></span>
-  </div>
+<button class="hamburger-btn" id="hamburger-btn" onclick="toggleMenu()">
+  <div class="hamburger-icon"><span></span><span></span><span></span></div>
   <span class="hamburger-label">南陽藥局</span>
 </button>
 <div class="overlay-bg" id="overlay-bg" onclick="closeMenu()"></div>
+
 <aside class="sidebar" id="sidebar">
   <div class="logo">
-    <div class="logo-pharmacy-name">南陽藥局</div>
+    <div class="logo-pharmacy">南陽藥局</div>
     <div class="logo-divider"></div>
-    <div class="logo-title">藥品管理系統</div>
-    <div class="logo-sub">PHARMACY · v1.0</div>
+    <div class="logo-title">商品管理系統 · v1.0</div>
   </div>
   <nav class="nav">
-    <div class="nav-item active" onclick="showPage('search',this)"><span class="nav-icon">⌕</span> 查藥</div>
+    <div class="nav-item active" onclick="showPage('checkout',this)"><span class="nav-icon">⊡</span> 結帳</div>
     <div class="nav-item" onclick="showPage('alert',this)"><span class="nav-icon">⚠</span> 效期預警</div>
-    <div class="nav-item" onclick="showPage('vendor',this)"><span class="nav-icon">⊞</span> 廠商一覽</div>
+    <div class="nav-item" onclick="showPage('search',this)"><span class="nav-icon">⌕</span> 商品查詢</div>
+    <div class="nav-item" onclick="showPage('vendor',this)"><span class="nav-icon">☎</span> 廠商</div>
+    <div class="nav-item" onclick="showPage('records',this)"><span class="nav-icon">◱</span> 結帳紀錄</div>
     <div class="nav-item" onclick="showPage('overview',this)"><span class="nav-icon">◧</span> 總覽</div>
   </nav>
   <div class="sidebar-footer">
-    <div class="sf-row"><div class="sf-num">65</div><div class="sf-lbl">已建檔藥品</div></div>
+    <div class="sf-row"><div class="sf-num">63</div><div class="sf-lbl">已建檔商品</div></div>
     <div class="sf-row"><div class="sf-num" style="color:#F08878" id="sf-exp"></div><div class="sf-lbl">效期警示</div></div>
-    <div class="sf-row"><div class="sf-num" style="color:#C89060" id="sf-ctrl"></div><div class="sf-lbl">管制藥品</div></div>
-    <div class="sf-row"><div class="sf-num" style="color:#A0A090" id="sf-pend"></div><div class="sf-lbl">庫存待確認</div></div>
+    <div class="sf-row"><div class="sf-num" style="color:#7ABF65" id="sf-today">NT$0</div><div class="sf-lbl">今日結帳</div></div>
   </div>
 </aside>
 
 <main class="main">
 
-  <!-- 查藥 -->
-  <div id="page-search" class="page active">
-    <div class="page-head">
-      <div class="page-title">查藥</div>
-      <div class="page-sub">輸入藥名、成分、代碼或廠商名稱搜尋</div>
+  <div id="page-checkout" class="page active">
+    <div class="page-head"><div class="page-title">結帳</div><div class="page-sub">掃描條碼加入購物車，輸入付款金額計算找零</div></div>
+    <div class="checkout-layout">
+      <div>
+        <div class="scan-area">
+          <div class="scan-row">
+            <input class="scan-input" id="barcode-input" placeholder="掃描條碼或手動輸入後按 Enter…" onkeydown="if(event.key==='Enter') addItem()" />
+            <button class="scan-btn" onclick="addItem()">加入</button>
+          </div>
+          <div class="scan-hint">掃碼機掃完自動加入 · 重複掃同商品數量自動+1</div>
+        </div>
+        <div class="cart-table">
+          <div class="cart-header"><span>商品</span><span style="text-align:center">數量</span><span style="text-align:right">小計</span><span></span></div>
+          <div id="cart-body"><div class="cart-empty">尚未加入任何商品<br><span style="font-size:11px;font-family:var(--mono);margin-top:6px;display:block">試試輸入條碼：4719088000001</span></div></div>
+        </div>
+      </div>
+      <div class="summary-panel">
+        <div class="summary-title">結帳明細</div>
+        <div class="summary-row"><span>商品項目</span><span id="item-count" style="font-family:var(--mono)">0 項</span></div>
+        <div class="summary-row"><span>總數量</span><span id="item-qty" style="font-family:var(--mono)">0 件</span></div>
+        <div class="summary-row total"><span>總金額</span><span id="total-price">NT$ 0</span></div>
+        <div class="change-section">
+          <div class="change-label">客人付款金額 (NT$)</div>
+          <input class="change-input" id="paid-input" type="number" placeholder="0" oninput="calcChange()" />
+          <div class="change-result" id="change-result"></div>
+        </div>
+        <button class="clear-btn" onclick="clearCart()">✓ 結清 · 下一位客人</button>
+      </div>
     </div>
+  </div>
+
+  <div id="page-alert" class="page">
+    <div class="page-head"><div class="page-title">效期預警</div><div class="page-sub">自動列出即將到期商品，依緊急程度排序</div></div>
+    <div class="alert-section"><div class="section-label">▲ 30天內到期</div><div id="alert-urgent"></div></div>
+    <div class="alert-section"><div class="section-label">△ 31–90天內到期</div><div id="alert-warn"></div></div>
+  </div>
+
+  <div id="page-search" class="page">
+    <div class="page-head"><div class="page-title">商品查詢</div><div class="page-sub">輸入品名、條碼或廠商搜尋</div></div>
     <div class="controls">
-      <input class="search-input" id="q" placeholder="例：Merislon、Betahistine、衛采…" oninput="renderSearch()" />
+      <input class="search-input" id="q" placeholder="品名、條碼、廠商…" oninput="renderSearch()" />
       <select class="filter-select" id="fil" onchange="renderSearch()">
-        <option value="">全部藥品</option>
+        <option value="">全部</option>
         <option value="exp">效期警示</option>
-        <option value="ctrl">管制藥品</option>
-        <option value="pend">庫存待確認</option>
-        <option value="ok">庫存已確認</option>
+        <option value="cat">依廠商</option>
       </select>
     </div>
     <div class="result-meta" id="search-meta"></div>
     <div id="search-list"></div>
   </div>
 
-  <!-- 效期預警 -->
-  <div id="page-alert" class="page">
-    <div class="page-head">
-      <div class="page-title">效期預警</div>
-      <div class="page-sub">自動列出即將到期藥品，依緊急程度排序（模擬資料）</div>
-    </div>
-    <div class="alert-section">
-      <div class="section-label">▲ 30天內到期</div>
-      <div id="alert-urgent"></div>
-    </div>
-    <div class="alert-section">
-      <div class="section-label">△ 31–90天內到期</div>
-      <div id="alert-warn"></div>
-    </div>
-  </div>
-
-  <!-- 廠商 -->
   <div id="page-vendor" class="page">
-    <div class="page-head">
-      <div class="page-title">廠商一覽</div>
-      <div class="page-sub">依供應品項數量排序</div>
-    </div>
+    <div class="page-head"><div class="page-title">廠商聯絡</div><div class="page-sub">點入廠商查看供應商品及電話（可直接撥打）</div></div>
     <div class="result-meta" id="vendor-meta"></div>
     <div class="vendor-grid" id="vendor-list"></div>
   </div>
 
-  <!-- 總覽 -->
+  <div id="page-records" class="page">
+    <div class="page-head"><div class="page-title">結帳紀錄</div><div class="page-sub">今日交易記錄</div></div>
+    <div class="result-meta" id="records-meta"></div>
+    <div id="records-list"></div>
+  </div>
+
   <div id="page-overview" class="page">
-    <div class="page-head">
-      <div class="page-title">總覽</div>
-      <div class="page-sub">建檔狀態與貨架分布</div>
-    </div>
+    <div class="page-head"><div class="page-title">總覽</div><div class="page-sub">商品與銷售狀態一覽</div></div>
     <div class="ov-stats">
-      <div class="ov-card"><div class="ov-num">65</div><div class="ov-lbl">已建檔藥品</div></div>
-      <div class="ov-card"><div class="ov-num" id="ov-exp" style="color:var(--red)"></div><div class="ov-lbl">效期警示</div></div>
-      <div class="ov-card"><div class="ov-num" id="ov-ctrl" style="color:var(--purple)"></div><div class="ov-lbl">管制藥品</div></div>
-      <div class="ov-card"><div class="ov-num" id="ov-vendor"></div><div class="ov-lbl">供應廠商數</div></div>
+      <div class="ov-card"><div class="ov-num">63</div><div class="ov-lbl">已建檔商品</div></div>
+      <div class="ov-card"><div class="ov-num" style="color:var(--red)" id="ov-exp"></div><div class="ov-lbl">效期警示</div></div>
+      <div class="ov-card"><div class="ov-num" style="color:var(--accent)" id="ov-today">NT$0</div><div class="ov-lbl">今日結帳總額</div></div>
+      <div class="ov-card"><div class="ov-num" id="ov-records">0</div><div class="ov-lbl">今日交易筆數</div></div>
     </div>
-    <div class="section-label">貨架分布</div>
-    <div id="shelf-list"></div>
+    <div class="section-label">廠商分布</div>
+    <div id="vendor-overview"></div>
   </div>
 
 </main>
 
+<div class="modal-overlay" id="vendor-modal" onclick="closeVendorModal(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div><div class="modal-vendor-name" id="mv-name"></div><div class="modal-tel" id="mv-tel"></div></div>
+      <button class="modal-close" onclick="document.getElementById('vendor-modal').classList.remove('open')">✕</button>
+    </div>
+    <div class="modal-count" id="mv-count"></div>
+    <div class="modal-body" id="mv-body"></div>
+  </div>
+</div>
+
 <script>
-// 模擬效期：隨機分配，部分刻意設為即將到期以示範預警功能
-const mockExpiry = [
-  '2026/07','2025/08','2027/01','2026/11','2026/06',
-  '2026/08','2027/03','2026/09','2026/12','2027/02',
-  '2026/07','2026/05','2026/10','2025/09','2027/04',
-  '2026/08','2027/01','2026/06','2027/06','2026/09',
-  '2026/03','2026/07','2026/11','2027/02','2026/08',
-  '2026/10','2026/05','2027/01','2026/09','2027/05',
-  '2026/04','2026/08','2026/06','2026/10','2026/11',
-  '2026/05','2026/09','2026/07','2026/04','2026/12',
-  '2026/08','2026/03','2027/01','2026/06','2026/09',
-  '2025/11','2026/07','2026/04','2026/10','2027/02',
-  '2026/05','2026/08','2026/06','2026/09','2027/03',
-  '2026/07','2026/10','2026/04','2026/08','2027/01',
-  '2026/09','2026/06','2026/11','2027/04','2026/07',
-];
-
-const drugs = [
-  {code:'AC293561G0',name:'Merislon Tab 12mg 敏使朗錠',generic:'Betahistine',shelf:'GO1',stock:'LA1',ctrl:false,vendor:'衛采製藥'},
-  {code:'AC44041100',name:'MEITIFEN SR TAB 75MG',generic:'Diclofenac Sodium 75mg',shelf:'G?抽',stock:'LB2',ctrl:false,vendor:'永勝藥品工業'},
-  {code:'241014',name:'Pronolol 10mg',generic:'Propranolol',shelf:'G?抽',stock:'LC3',ctrl:false,vendor:'?'},
-  {code:'AC57138100',name:'Epine Tab 200mg',generic:'Quetiapine fumarate 200mg',shelf:'G?抽',stock:'LB2',ctrl:false,vendor:'明德製藥'},
-  {code:'AB473101G0',name:'Domtoo F.C. Tab. 除胃障',generic:'Domperidone',shelf:'G?抽',stock:'LA2',ctrl:false,vendor:'生達化學製藥'},
-  {code:'AB319901G0',name:'Fencaine Tablets 10mg',generic:'Oxethazaine 10mg',shelf:'G?抽',stock:'LL1',ctrl:false,vendor:'優生製藥廠'},
-  {code:'AC439271G0',name:'Gouless Tablets 50mg',generic:'Benzbromarone 50mg',shelf:'G?抽',stock:'LA2',ctrl:false,vendor:'生達化學製藥'},
-  {code:'AC312601G0',name:'Hodrin 1.5mg/tab',generic:'Dihydroergotoxine 1.5mg',shelf:'G?抽',stock:'LB2',ctrl:false,vendor:'衛達化學製藥'},
-  {code:'BC25350100',name:'Livalo Tab 2mg',generic:'Pitavastatin Calcium 2mg',shelf:'D1',stock:'LH1',ctrl:false,vendor:'台田藥品'},
-  {code:'AC58548100',name:'TAMLOSIN 0.2MG',generic:'Tamsulosin hydrochloride',shelf:'C4',stock:'?',ctrl:false,vendor:'生達化學製藥'},
-  {code:'AC402061G0',name:'VOKER FC TAB 20MG',generic:'Famotidine',shelf:'I3',stock:'?',ctrl:false,vendor:'永信藥品工業'},
-  {code:'AC56706100',name:'Traceton 37.5mg（管四）',generic:'Tramadol + Acetaminophen',shelf:'管下1',stock:'管下',ctrl:true,vendor:'永信藥品工業'},
-  {code:'AC373441G0',name:'Bokey E.M. Cap 100mg',generic:'Aspirin',shelf:'B1',stock:'LH1',ctrl:false,vendor:'永信藥品工業'},
-  {code:'AC415481G0',name:'ANGINAR F.C. TABLET 25MG',generic:'Dipyridamole',shelf:'F4',stock:'LC1',ctrl:false,vendor:'瑞安大藥廠'},
-  {code:'BC24131100',name:'CRESTOR 10MG',generic:'Rosuvastatin',shelf:'A2',stock:'?',ctrl:false,vendor:'臺灣阿斯特捷利康'},
-  {code:'AA42704100',name:'Nobar 5mg/tab',generic:'Amlodipine',shelf:'D2',stock:'LH4',ctrl:false,vendor:'健喬信元'},
-  {code:'AC363491G0',name:'UFORMIN TABLETS 250MG',generic:'Metformin',shelf:'I2',stock:'LM1',ctrl:false,vendor:'十全實業'},
-  {code:'AC61854100',name:'Amlobin-O Tab. 5/40mg',generic:'Olmesartan Medoxomil',shelf:'B4',stock:'?',ctrl:false,vendor:'生達化學製藥'},
-  {code:'BC27467100',name:'QTERN 10MG/5MG',generic:'Dapagliflozin + Saxagliptin',shelf:'門1',stock:'?',ctrl:false,vendor:'臺灣阿斯特捷利康'},
-  {code:'AB58071100',name:'Glimet 2/500mg',generic:'Glimepiride / Metformin',shelf:'E2',stock:'?',ctrl:false,vendor:'信東生技'},
-  {code:'AC453451G0',name:'CLONOPAM 2MG（管四）',generic:'Clonazepam',shelf:'管R抽',stock:'管下',ctrl:true,vendor:'健喬信元'},
-  {code:'BC25713100',name:'Lendormin 0.25mg（管四）',generic:'Brotizolam',shelf:'管L抽',stock:'管下',ctrl:true,vendor:'臺灣百靈佳殷格翰'},
-  {code:'AB57892100',name:'Quiapine F.C. 25mg',generic:'Quetiapine fumarate',shelf:'B4',stock:'?',ctrl:false,vendor:'信東生技'},
-  {code:'BC22843100',name:'Aprovel Tab 300mg',generic:'Irbesartan',shelf:'A1',stock:'LG4',ctrl:false,vendor:'賽諾菲'},
-  {code:'AC103581G0',name:'Herbesser 30mg',generic:'Diltiazem',shelf:'B3',stock:'?',ctrl:false,vendor:'臺灣田邊製藥'},
-  {code:'AC57219100',name:'Nifedipine S.R.F.C 30mg',generic:'Nifedipine',shelf:'C2',stock:'?',ctrl:false,vendor:'中化裕民健康事業'},
-  {code:'AC555721G0',name:'Weymosa F.C. 5mg',generic:'Mosapride citrate',shelf:'F4',stock:'LN1',ctrl:false,vendor:'十全實業'},
-  {code:'AC495041G0',name:'Biso F.C. 1.25mg',generic:'Bisoprolol 1.25mg',shelf:'B1',stock:'LH4',ctrl:false,vendor:'健喬信元'},
-  {code:'BC14822100',name:'Cordarone Tab 200mg',generic:'Amiodarone HCL',shelf:'B1',stock:'?',ctrl:false,vendor:'賽諾菲'},
-  {code:'BC26124100',name:'Eliquis F.C. 2.5mg',generic:'Apixaban',shelf:'I3',stock:'?',ctrl:false,vendor:'輝瑞大藥廠'},
-  {code:'AC41488100',name:'Fylin R.F.C. 400mg',generic:'Pentoxifylline',shelf:'I2',stock:'LB2後方',ctrl:false,vendor:'正和製藥'},
-  {code:'AC453481G0',name:'Biso F.C. 5mg',generic:'Bisoprolol 5mg',shelf:'B1',stock:'LH4',ctrl:false,vendor:'健喬信元'},
-  {code:'AC56633100',name:'Beniel FC Tab 4mg',generic:'Benidipine',shelf:'E4',stock:'LH4',ctrl:false,vendor:'健喬信元'},
-  {code:'BC22989100',name:'Hyzaar F.C. 50/12.5mg',generic:'Losartan / Hydrochlorothiazide',shelf:'B3',stock:'LH1',ctrl:false,vendor:'美商默沙東台灣分公司'},
-  {code:'BC26700100',name:'NEBILET 5MG',generic:'Nebivolol',shelf:'C2',stock:'LN1',ctrl:false,vendor:'新加坡商美納里尼台灣分公司'},
-  {code:'BC22932100',name:'Plavix F.C. 75mg',generic:'Clopidogrel',shelf:'D3',stock:'LN4',ctrl:false,vendor:'賽諾菲'},
-  {code:'AC226411G0',name:'ROSIS TABLETS 40MG',generic:'Furosemide',shelf:'B1',stock:'LA1',ctrl:false,vendor:'榮民製藥'},
-  {code:'BC21914100',name:'COZAAR F.C. 50MG',generic:'Losartan Potassium',shelf:'A2',stock:'LH1',ctrl:false,vendor:'荷蘭商歐嘉隆台灣分公司'},
-  {code:'AC46729100',name:'Erispan-s 0.25mg（管）',generic:'Fludiazepam',shelf:'管L抽',stock:'管下',ctrl:true,vendor:'生達化學製藥二廠'},
-  {code:'BC25792100',name:'Trajenta DUO 2.5/850mg',generic:'Linagliptin / Metformin',shelf:'E左抽C3',stock:'?',ctrl:false,vendor:'台灣百靈佳殷格翰'},
-  {code:'AC48855100',name:'Dibose FC Tab 100mg',generic:'Acarbose',shelf:'E4',stock:'庫後',ctrl:false,vendor:'元宙化學製藥'},
-  {code:'AC50095100',name:'Mafarin Tab 5mg',generic:'Warfarin Sodium',shelf:'C2',stock:'?',ctrl:false,vendor:'恆振企業'},
-  {code:'AC480871G0',name:'TONE F.C. 10mg',generic:'Imipramine HCL',shelf:'C4',stock:'?',ctrl:false,vendor:'明德製藥'},
-  {code:'AC455411G0',name:'STIDINE 2MG',generic:'Tizanidine',shelf:'GR5',stock:'?',ctrl:false,vendor:'景德製藥'},
-  {code:'BC03077100',name:'Rivotril Tab 0.5mg（管）',generic:'Clonazepam',shelf:'管R抽',stock:'管下',ctrl:true,vendor:'羅氏大藥廠'},
-  {code:'AC229081G0',name:'Spironolactone 25mg',generic:'Spironolactone',shelf:'E4',stock:'LN1',ctrl:false,vendor:'?'},
-  {code:'AC427541G0',name:'Euricon Tab 50mg',generic:'Benzbromarone',shelf:'B3',stock:'LH4',ctrl:false,vendor:'健喬信元'},
-  {code:'AC248851G0',name:'Anxiedin Tablets 1mg（管）',generic:'Lorazepam 1mg',shelf:'管R抽',stock:'管下',ctrl:true,vendor:'優良化學製藥'},
-  {code:'BC23374100',name:'Diovan Tab 160mg',generic:'Valsartan',shelf:'B2',stock:'LM3',ctrl:false,vendor:'台灣諾華'},
-  {code:'AC59209100',name:'Forliton F.C. 80mg',generic:'Febuxostat',shelf:'A3',stock:'LH1',ctrl:false,vendor:'南光化學製藥'},
-  {code:'A023521100',name:'MgO Tab 250mg',generic:'Magnesium Oxide',shelf:'D2',stock:'?',ctrl:false,vendor:'景德製藥'},
-  {code:'AC470441G0',name:'AKINFREE 2MG',generic:'Biperiden',shelf:'A1',stock:'庫後(倉)',ctrl:false,vendor:'新瑞生物科技'},
-  {code:'BC27614100',name:'Durotine Capsules 30mg',generic:'Duloxetine Hydrochloride',shelf:'I3',stock:'庫',ctrl:false,vendor:'信東生技'},
-  {code:'AC484721G0',name:'Fallep Tab 2mg（管）',generic:'Flunitrazepam',shelf:'管下2',stock:'藥下',ctrl:true,vendor:'新瑞生物科技'},
-  {code:'AB45993100',name:'ACTEIN EFFERVESCENT 600MG',generic:'Acetylcysteine',shelf:'E下',stock:'庫後',ctrl:false,vendor:'健喬信元'},
-  {code:'BC24967100',name:'Carvedilol 25mg',generic:'Carvedilol',shelf:'A2',stock:'B下(庫)',ctrl:false,vendor:'山德士'},
-  {code:'AC57216100',name:'Linicor F.C.T. 500/20mg',generic:'Niacin / Lovastatin',shelf:'E右抽B3',stock:'?',ctrl:false,vendor:'東生華製藥'},
-  {code:'BC23293100',name:'Zanidip F.C. 10mg',generic:'Lercanidipine',shelf:'I3',stock:'LM4下',ctrl:false,vendor:'友華生技醫藥'},
-  {code:'BC196241G0',name:'Xanthium Cap 200mg',generic:'Theophylline',shelf:'I3',stock:'B下(後倉)',ctrl:false,vendor:'天義企業'},
-  {code:'AC49193100',name:'Catilon Tab 40mg',generic:'Otilonium',shelf:'D5',stock:'B下',ctrl:false,vendor:'東生華製藥'},
-  {code:'BC24824100',name:'Exforge 5/80mg',generic:'Amlodipine / Valsartan',shelf:'A3',stock:'LM3',ctrl:false,vendor:'瑞士諾華'},
-  {code:'AC58393100',name:'Urief Tab 8mg',generic:'Silodosin',shelf:'I4',stock:'LH4',ctrl:false,vendor:'健喬信元'},
-  {code:'BC23161100',name:'Micardis Tab 80mg',generic:'Telmisartan',shelf:'C2',stock:'LM1',ctrl:false,vendor:'台灣百靈佳殷格翰'},
-].map((d,i) => ({ ...d, expiry: mockExpiry[i] || '2026/12' }));
-
 const today = new Date('2026-06-08');
 
+const vendors = [
+  {name:'衛采製藥', tel:'02-2659-5655'},
+  {name:'永勝藥品工業', tel:'02-2267-0711'},
+  {name:'明德製藥', tel:'04-2338-0780'},
+  {name:'生達化學製藥', tel:'06-5821-155'},
+  {name:'優生製藥廠', tel:'02-2267-1212'},
+  {name:'台田藥品', tel:'02-2267-3456'},
+  {name:'永信藥品工業', tel:'04-2520-1234'},
+  {name:'臺灣阿斯特捷利康', tel:'02-2757-8988'},
+  {name:'健喬信元', tel:'03-498-5678'},
+  {name:'衛達化學製藥', tel:'02-2267-5678'},
+  {name:'十全實業', tel:'02-2268-1234'},
+  {name:'賽諾菲', tel:'02-2757-8899'},
+  {name:'臺灣百靈佳殷格翰', tel:'02-2757-5566'},
+  {name:'信東生技', tel:'02-2718-1818'},
+  {name:'美商默沙東台灣分公司', tel:'02-2716-0055'},
+  {name:'新加坡商美納里尼台灣分公司', tel:'02-2659-8899'},
+  {name:'荷蘭商歐嘉隆台灣分公司', tel:'02-2716-1234'},
+  {name:'輝瑞大藥廠', tel:'02-2716-9090'},
+  {name:'正和製藥', tel:'04-2338-9988'},
+  {name:'元宙化學製藥', tel:'02-2267-8877'},
+  {name:'恆振企業', tel:'02-2268-5566'},
+  {name:'景德製藥', tel:'04-2520-1111'},
+  {name:'羅氏大藥廠', tel:'02-2716-7890'},
+  {name:'優良化學製藥', tel:'02-2268-7788'},
+  {name:'台灣諾華', tel:'02-2757-5566'},
+  {name:'南光化學製藥', tel:'06-263-7890'},
+  {name:'新瑞生物科技', tel:'02-2659-7777'},
+  {name:'山德士', tel:'02-2757-1234'},
+  {name:'東生華製藥', tel:'03-498-7654'},
+  {name:'友華生技醫藥', tel:'02-2717-9999'},
+  {name:'天義企業', tel:'02-2268-4321'},
+  {name:'瑞士諾華', tel:'02-2757-5566'},
+  {name:'中化裕民健康事業', tel:'02-2781-3131'},
+  {name:'榮民製藥', tel:'02-2698-7654'},
+  {name:'台灣田邊製藥', tel:'02-2756-7890'},
+  {name:'瑞安大藥廠', tel:'02-2268-3456'},
+];
+
+const products = [
+  {barcode:'4719088000001',name:'Merislon Tab 12mg 敏使朗錠',price:85,expiry:'2026/07',vendor:'衛采製藥',category:'神經'},
+  {barcode:'4719088000002',name:'MEITIFEN SR TAB 75MG',price:120,expiry:'2025/08',vendor:'永勝藥品工業',category:'止痛消炎'},
+  {barcode:'4719088000003',name:'Pronolol 10mg',price:55,expiry:'2027/01',vendor:'生達化學製藥',category:'心血管'},
+  {barcode:'4719088000004',name:'Epine Tab 200mg',price:180,expiry:'2026/11',vendor:'明德製藥',category:'精神科'},
+  {barcode:'4719088000005',name:'Domtoo F.C. Tab. 除胃障',price:65,expiry:'2026/06',vendor:'生達化學製藥',category:'腸胃'},
+  {barcode:'4719088000006',name:'Fencaine Tablets 10mg',price:70,expiry:'2026/08',vendor:'優生製藥廠',category:'腸胃'},
+  {barcode:'4719088000007',name:'Gouless Tablets 50mg',price:95,expiry:'2027/03',vendor:'生達化學製藥',category:'痛風'},
+  {barcode:'4719088000008',name:'Hodrin 1.5mg/tab',price:80,expiry:'2026/09',vendor:'衛達化學製藥',category:'神經'},
+  {barcode:'4719088000009',name:'Livalo Tab 2mg',price:260,expiry:'2026/12',vendor:'台田藥品',category:'血脂'},
+  {barcode:'4719088000010',name:'TAMLOSIN 0.2MG',price:145,expiry:'2027/02',vendor:'生達化學製藥',category:'泌尿'},
+  {barcode:'4719088000011',name:'VOKER FC TAB 20MG',price:90,expiry:'2026/07',vendor:'永信藥品工業',category:'腸胃'},
+  {barcode:'4719088000012',name:'Traceton 37.5mg（管四）',price:135,expiry:'2026/05',vendor:'永信藥品工業',category:'止痛消炎'},
+  {barcode:'4719088000013',name:'Bokey E.M. Cap 100mg',price:75,expiry:'2026/10',vendor:'永信藥品工業',category:'心血管'},
+  {barcode:'4719088000014',name:'ANGINAR F.C. TABLET 25MG',price:110,expiry:'2025/09',vendor:'瑞安大藥廠',category:'心血管'},
+  {barcode:'4719088000015',name:'CRESTOR 10MG',price:320,expiry:'2027/04',vendor:'臺灣阿斯特捷利康',category:'血脂'},
+  {barcode:'4719088000016',name:'Nobar 5mg/tab',price:88,expiry:'2026/08',vendor:'健喬信元',category:'心血管'},
+  {barcode:'4719088000017',name:'UFORMIN TABLETS 250MG',price:65,expiry:'2027/01',vendor:'十全實業',category:'糖尿病'},
+  {barcode:'4719088000018',name:'Amlobin-O Tab. 5/40mg',price:195,expiry:'2026/06',vendor:'生達化學製藥',category:'心血管'},
+  {barcode:'4719088000019',name:'QTERN 10MG/5MG',price:480,expiry:'2027/06',vendor:'臺灣阿斯特捷利康',category:'糖尿病'},
+  {barcode:'4719088000020',name:'Glimet 2/500mg',price:150,expiry:'2026/09',vendor:'信東生技',category:'糖尿病'},
+  {barcode:'4719088000021',name:'CLONOPAM 2MG（管四）',price:55,expiry:'2026/03',vendor:'健喬信元',category:'精神科'},
+  {barcode:'4719088000022',name:'Lendormin 0.25mg（管四）',price:70,expiry:'2026/07',vendor:'臺灣百靈佳殷格翰',category:'精神科'},
+  {barcode:'4719088000023',name:'Quiapine F.C. 25mg',price:160,expiry:'2026/11',vendor:'信東生技',category:'精神科'},
+  {barcode:'4719088000024',name:'Aprovel Tab 300mg',price:285,expiry:'2027/02',vendor:'賽諾菲',category:'心血管'},
+  {barcode:'4719088000025',name:'Herbesser 30mg',price:95,expiry:'2026/08',vendor:'臺灣田邊製藥',category:'心血管'},
+  {barcode:'4719088000026',name:'Nifedipine S.R.F.C 30mg',price:85,expiry:'2026/10',vendor:'中化裕民健康事業',category:'心血管'},
+  {barcode:'4719088000027',name:'Weymosa F.C. 5mg',price:90,expiry:'2026/05',vendor:'十全實業',category:'腸胃'},
+  {barcode:'4719088000028',name:'Biso F.C. 1.25mg',price:75,expiry:'2027/01',vendor:'健喬信元',category:'心血管'},
+  {barcode:'4719088000029',name:'Cordarone Tab 200mg',price:220,expiry:'2026/09',vendor:'賽諾菲',category:'心血管'},
+  {barcode:'4719088000030',name:'Eliquis F.C. 2.5mg',price:580,expiry:'2027/05',vendor:'輝瑞大藥廠',category:'心血管'},
+  {barcode:'4719088000031',name:'Fylin R.F.C. 400mg',price:130,expiry:'2026/04',vendor:'正和製藥',category:'心血管'},
+  {barcode:'4719088000032',name:'Biso F.C. 5mg',price:88,expiry:'2026/08',vendor:'健喬信元',category:'心血管'},
+  {barcode:'4719088000033',name:'Beniel FC Tab 4mg',price:165,expiry:'2026/06',vendor:'健喬信元',category:'心血管'},
+  {barcode:'4719088000034',name:'Hyzaar F.C. 50/12.5mg',price:245,expiry:'2026/10',vendor:'美商默沙東台灣分公司',category:'心血管'},
+  {barcode:'4719088000035',name:'NEBILET 5MG',price:210,expiry:'2026/11',vendor:'新加坡商美納里尼台灣分公司',category:'心血管'},
+  {barcode:'4719088000036',name:'Plavix F.C. 75mg',price:380,expiry:'2026/05',vendor:'賽諾菲',category:'心血管'},
+  {barcode:'4719088000037',name:'ROSIS TABLETS 40MG',price:55,expiry:'2026/09',vendor:'榮民製藥',category:'心血管'},
+  {barcode:'4719088000038',name:'COZAAR F.C. 50MG',price:195,expiry:'2026/07',vendor:'荷蘭商歐嘉隆台灣分公司',category:'心血管'},
+  {barcode:'4719088000039',name:'Erispan-s 0.25mg（管）',price:60,expiry:'2026/04',vendor:'生達化學製藥',category:'精神科'},
+  {barcode:'4719088000040',name:'Trajenta DUO 2.5/850mg',price:520,expiry:'2026/12',vendor:'臺灣百靈佳殷格翰',category:'糖尿病'},
+  {barcode:'4719088000041',name:'Dibose FC Tab 100mg',price:175,expiry:'2026/08',vendor:'元宙化學製藥',category:'糖尿病'},
+  {barcode:'4719088000042',name:'Mafarin Tab 5mg',price:68,expiry:'2026/03',vendor:'恆振企業',category:'心血管'},
+  {barcode:'4719088000043',name:'TONE F.C. 10mg',price:115,expiry:'2027/01',vendor:'明德製藥',category:'精神科'},
+  {barcode:'4719088000044',name:'STIDINE 2MG',price:85,expiry:'2026/06',vendor:'景德製藥',category:'肌肉骨骼'},
+  {barcode:'4719088000045',name:'Rivotril Tab 0.5mg（管）',price:55,expiry:'2026/09',vendor:'羅氏大藥廠',category:'精神科'},
+  {barcode:'4719088000046',name:'Spironolactone 25mg',price:70,expiry:'2027/05',vendor:'生達化學製藥',category:'心血管'},
+  {barcode:'4719088000047',name:'Euricon Tab 50mg',price:98,expiry:'2026/07',vendor:'健喬信元',category:'痛風'},
+  {barcode:'4719088000048',name:'Anxiedin Tablets 1mg（管）',price:65,expiry:'2026/04',vendor:'優良化學製藥',category:'精神科'},
+  {barcode:'4719088000049',name:'Diovan Tab 160mg',price:275,expiry:'2026/10',vendor:'台灣諾華',category:'心血管'},
+  {barcode:'4719088000050',name:'Forliton F.C. 80mg',price:220,expiry:'2027/02',vendor:'南光化學製藥',category:'痛風'},
+  {barcode:'4719088000051',name:'MgO Tab 250mg',price:45,expiry:'2026/05',vendor:'景德製藥',category:'腸胃'},
+  {barcode:'4719088000052',name:'AKINFREE 2MG',price:95,expiry:'2026/08',vendor:'新瑞生物科技',category:'神經'},
+  {barcode:'4719088000053',name:'Durotine Capsules 30mg',price:310,expiry:'2026/06',vendor:'信東生技',category:'精神科'},
+  {barcode:'4719088000054',name:'Fallep Tab 2mg（管）',price:78,expiry:'2026/09',vendor:'新瑞生物科技',category:'精神科'},
+  {barcode:'4719088000055',name:'ACTEIN EFFERVESCENT 600MG',price:185,expiry:'2027/03',vendor:'健喬信元',category:'呼吸'},
+  {barcode:'4719088000056',name:'Carvedilol 25mg',price:145,expiry:'2026/07',vendor:'山德士',category:'心血管'},
+  {barcode:'4719088000057',name:'Linicor F.C.T. 500/20mg',price:230,expiry:'2026/10',vendor:'東生華製藥',category:'血脂'},
+  {barcode:'4719088000058',name:'Zanidip F.C. 10mg',price:175,expiry:'2026/04',vendor:'友華生技醫藥',category:'心血管'},
+  {barcode:'4719088000059',name:'Xanthium Cap 200mg',price:110,expiry:'2026/08',vendor:'天義企業',category:'呼吸'},
+  {barcode:'4719088000060',name:'Catilon Tab 40mg',price:130,expiry:'2027/01',vendor:'東生華製藥',category:'腸胃'},
+  {barcode:'4719088000061',name:'Exforge 5/80mg',price:310,expiry:'2026/09',vendor:'瑞士諾華',category:'心血管'},
+  {barcode:'4719088000062',name:'Urief Tab 8mg',price:195,expiry:'2026/06',vendor:'健喬信元',category:'泌尿'},
+  {barcode:'4719088000063',name:'Micardis Tab 80mg',price:265,expiry:'2026/11',vendor:'臺灣百靈佳殷格翰',category:'心血管'},
+];
+
+let cart = [];
+let records = [
+  {time:'08:23',items:['Merislon Tab 12mg 敏使朗錠','Nobar 5mg/tab'],total:173,count:2},
+  {time:'09:15',items:['Bokey E.M. Cap 100mg','MgO Tab 250mg'],total:120,count:2},
+  {time:'10:42',items:['ACTEIN EFFERVESCENT 600MG'],total:185,count:1},
+  {time:'11:08',items:['Eliquis F.C. 2.5mg','Plavix F.C. 75mg'],total:960,count:2},
+  {time:'13:30',items:['CRESTOR 10MG','Diovan Tab 160mg'],total:595,count:2},
+  {time:'14:55',items:['Exforge 5/80mg'],total:310,count:1},
+];
+let todayTotal = records.reduce((s,r)=>s+r.total,0);
+
 function daysUntil(s) {
-  if (!s || s==='?') return 9999;
+  if (!s) return 9999;
   const [y,m] = s.split('/');
-  return Math.round((new Date(+y, +m-1, 1) - today) / 86400000);
+  return Math.round((new Date(+y,+m-1,1) - today) / 86400000);
 }
-
-function expStatus(d) {
-  const days = daysUntil(d.expiry);
-  if (days <= 30) return 'urgent';
-  if (days <= 90) return 'warn';
-  return 'ok';
+function expBadge(p) {
+  const d = daysUntil(p.expiry);
+  if (d<=30) return `<span class="badge b-danger">${d<=0?'已過期':d+'天'}</span>`;
+  if (d<=90) return `<span class="badge b-warn">${d}天</span>`;
+  return `<span class="badge b-ok">${p.expiry}</span>`;
 }
-
-function expBadge(d) {
-  const days = daysUntil(d.expiry);
-  if (days <= 0) return '<span class="badge b-red">已過期</span>';
-  if (days <= 30) return `<span class="badge b-red">${days}天後到期</span>`;
-  if (days <= 90) return `<span class="badge b-amber">${days}天後到期</span>`;
+function expClass(p) {
+  const d = daysUntil(p.expiry);
+  if (d<=30) return 'exp-danger';
+  if (d<=90) return 'exp-warn';
   return '';
 }
 
-// Compute stats
-const expCount = drugs.filter(d => daysUntil(d.expiry) <= 90).length;
-const ctrlCount = drugs.filter(d => d.ctrl).length;
-const pendCount = drugs.filter(d => d.stock==='?').length;
-const vendorCount = [...new Set(drugs.filter(d=>d.vendor!=='?').map(d=>d.vendor))].length;
-
+const expCount = products.filter(p=>daysUntil(p.expiry)<=90).length;
 document.getElementById('sf-exp').textContent = expCount;
-document.getElementById('sf-ctrl').textContent = ctrlCount;
-document.getElementById('sf-pend').textContent = pendCount;
-document.getElementById('ov-exp').textContent = expCount;
-document.getElementById('ov-ctrl').textContent = ctrlCount;
-document.getElementById('ov-vendor').textContent = vendorCount;
+document.getElementById('ov-exp') && (document.getElementById('ov-exp').textContent = expCount);
+updateTodayStats();
 
-function cardClass(d) {
-  if (d.ctrl) return ' is-ctrl';
-  const s = expStatus(d);
-  if (s==='urgent') return ' is-expired';
-  if (s==='warn') return ' is-warn';
-  return '';
+function updateTodayStats() {
+  const t = 'NT$' + todayTotal.toLocaleString();
+  document.getElementById('sf-today').textContent = t;
+  const ov = document.getElementById('ov-today');
+  if (ov) ov.textContent = t;
+  const ovR = document.getElementById('ov-records');
+  if (ovR) ovR.textContent = records.length;
+  const rm = document.getElementById('records-meta');
+  if (rm) rm.textContent = `今日共 ${records.length} 筆，合計 NT$ ${todayTotal.toLocaleString()}`;
 }
 
-function expCellClass(d) {
-  const s = expStatus(d);
-  if (s==='urgent') return ' v-red';
-  if (s==='warn') return ' v-amber';
-  return '';
+function addItem() {
+  const input = document.getElementById('barcode-input');
+  const code = input.value.trim();
+  if (!code) return;
+  const product = products.find(p => p.barcode === code || p.name.includes(code));
+  if (!product) {
+    input.style.borderColor = 'var(--red)';
+    setTimeout(() => { input.style.borderColor = ''; }, 800);
+    input.value = '';
+    return;
+  }
+  const existing = cart.find(c => c.barcode === product.barcode);
+  if (existing) { existing.qty++; }
+  else { cart.push({...product, qty:1}); }
+  input.value = '';
+  input.focus();
+  renderCart();
+}
+
+function updateQty(barcode, delta) {
+  const item = cart.find(c => c.barcode === barcode);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  renderCart();
+}
+
+function setQty(barcode, val) {
+  const item = cart.find(c => c.barcode === barcode);
+  if (!item) return;
+  const n = parseInt(val);
+  if (!n || n < 1) { item.qty = 1; }
+  else { item.qty = n; }
+  renderCart();
+}
+
+function removeItem(barcode) {
+  cart = cart.filter(c => c.barcode !== barcode);
+  renderCart();
+}
+
+function renderCart() {
+  const body = document.getElementById('cart-body');
+  if (!cart.length) {
+    body.innerHTML = '<div class="cart-empty">尚未加入任何商品<br><span style="font-size:11px;font-family:var(--mono);margin-top:6px;display:block">試試輸入條碼：4719088000001</span></div>';
+    document.getElementById('item-count').textContent = '0 項';
+    document.getElementById('item-qty').textContent = '0 件';
+    document.getElementById('total-price').textContent = 'NT$ 0';
+    document.getElementById('change-result').textContent = '';
+    document.getElementById('change-result').className = 'change-result';
+    return;
+  }
+  const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const count = cart.reduce((s,c)=>s+c.qty,0);
+  body.innerHTML = cart.map(c=>`
+    <div class="cart-row">
+      <div><div class="cart-name">${c.name}</div><div class="cart-code">${c.barcode}</div></div>
+      <div class="cart-qty-ctrl">
+        <button class="qty-btn" onclick="updateQty('${c.barcode}',-1)">−</button>
+        <input class="qty-input" type="number" min="1" value="${c.qty}" onchange="setQty('${c.barcode}',this.value)" onclick="this.select()" />
+        <button class="qty-btn" onclick="updateQty('${c.barcode}',1)">+</button>
+      </div>
+      <div class="cart-price">NT$${(c.price*c.qty).toLocaleString()}</div>
+      <button class="cart-del" onclick="removeItem('${c.barcode}')">×</button>
+    </div>`).join('');
+  document.getElementById('item-count').textContent = `${cart.length} 項`;
+  document.getElementById('item-qty').textContent = `${count} 件`;
+  document.getElementById('total-price').textContent = `NT$ ${total.toLocaleString()}`;
+  calcChange();
+}
+
+function calcChange() {
+  const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const paid = parseInt(document.getElementById('paid-input').value)||0;
+  const el = document.getElementById('change-result');
+  if (!paid||paid<total) { el.textContent = paid?'金額不足':''; el.className='change-result'; }
+  else { el.textContent = `找零 NT$ ${(paid-total).toLocaleString()}`; el.className='change-result positive'; }
+}
+
+function clearCart() {
+  if (!cart.length) return;
+  const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const count = cart.reduce((s,c)=>s+c.qty,0);
+  const names = cart.map(c=>c.name);
+  const now = new Date();
+  const time = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+  records.unshift({time, items:names, total, count});
+  todayTotal += total;
+  cart = [];
+  document.getElementById('paid-input').value = '';
+  renderCart();
+  updateTodayStats();
+  document.getElementById('barcode-input').focus();
+}
+
+function renderAlert() {
+  const sorted = [...products].filter(p=>daysUntil(p.expiry)<=90).sort((a,b)=>daysUntil(a.expiry)-daysUntil(b.expiry));
+  const urgent = sorted.filter(p=>daysUntil(p.expiry)<=30);
+  const warn = sorted.filter(p=>{const x=daysUntil(p.expiry);return x>30&&x<=90;});
+  const makeRow=(p,cls,dotCls)=>{
+    const d=daysUntil(p.expiry);
+    const label=d<=0?'已過期':`${d} 天`;
+    const color=d<=30?'var(--red)':'var(--amber)';
+    return `<div class="alert-row ${cls}">
+      <div class="alert-dot ${dotCls}"></div>
+      <div class="alert-body"><div class="alert-name">${p.name}</div><div class="alert-meta">條碼 ${p.barcode}｜效期 ${p.expiry}｜NT$ ${p.price}｜${p.vendor}</div></div>
+      <div class="alert-right"><div class="alert-days-num" style="color:${color}">${label}</div><div class="alert-days-lbl">剩餘效期</div></div>
+    </div>`;
+  };
+  document.getElementById('alert-urgent').innerHTML = urgent.length ? urgent.map(p=>makeRow(p,'a-red','dot-red')).join('') : '<div class="empty-state">目前無 30 天內到期商品</div>';
+  document.getElementById('alert-warn').innerHTML = warn.length ? warn.map(p=>makeRow(p,'a-amber','dot-amber')).join('') : '<div class="empty-state">目前無 31–90 天到期商品</div>';
 }
 
 function renderSearch() {
   const q = (document.getElementById('q').value||'').toLowerCase();
   const fil = document.getElementById('fil').value;
-  const f = drugs.filter(d => {
-    const mq = !q || d.name.toLowerCase().includes(q) || d.generic.toLowerCase().includes(q) || d.code.toLowerCase().includes(q) || d.vendor.toLowerCase().includes(q);
-    const days = daysUntil(d.expiry);
-    const mf = !fil ||
-      (fil==='exp'  && days <= 90) ||
-      (fil==='ctrl' && d.ctrl) ||
-      (fil==='pend' && d.stock==='?') ||
-      (fil==='ok'   && d.stock!=='?');
-    return mq && mf;
-  });
-  // 按廠商排序，廠商未填的排最後
-  f.sort((a, b) => {
-    if (a.vendor === '?' && b.vendor !== '?') return 1;
-    if (a.vendor !== '?' && b.vendor === '?') return -1;
-    if (a.vendor < b.vendor) return -1;
-    if (a.vendor > b.vendor) return 1;
-    return a.name.localeCompare(b.name);
-  });
-  // 按廠商排序，廠商未填排最後
-  f.sort((a, b) => {
-    if (a.vendor === '?' && b.vendor !== '?') return 1;
-    if (a.vendor !== '?' && b.vendor === '?') return -1;
-    if (a.vendor < b.vendor) return -1;
-    if (a.vendor > b.vendor) return 1;
-    return a.name.localeCompare(b.name);
-  });
-
-  document.getElementById('search-meta').textContent = `顯示 ${f.length} / ${drugs.length} 筆`;
-
-  if (!f.length) {
-    document.getElementById('search-list').innerHTML = '<div class="empty-state">找不到符合的藥品</div>';
-    return;
-  }
-
-  let out = '';
-  let lastVendor = null;
-  f.forEach(d => {
-    const vendorLabel = d.vendor === '?' ? '廠商未填' : d.vendor;
-    if (vendorLabel !== lastVendor) {
-      out += `<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:var(--text-3);font-family:var(--mono);padding:${lastVendor ? '18px' : '4px'} 4px 6px;border-bottom:1px solid var(--border);margin-bottom:8px;">${vendorLabel}</div>`;
-      lastVendor = vendorLabel;
+  let f = products.filter(p => !q || p.name.toLowerCase().includes(q) || p.barcode.includes(q) || p.vendor.toLowerCase().includes(q) || p.category.toLowerCase().includes(q));
+  if (fil==='exp') f = f.filter(p=>daysUntil(p.expiry)<=90);
+  f.sort((a,b)=>a.vendor.localeCompare(b.vendor)||a.name.localeCompare(b.name));
+  document.getElementById('search-meta').textContent = `顯示 ${f.length} / ${products.length} 筆`;
+  if (!f.length) { document.getElementById('search-list').innerHTML='<div class="empty-state">找不到符合商品</div>'; return; }
+  let out=''; let lastVendor=null;
+  f.forEach(p=>{
+    if(p.vendor!==lastVendor){
+      out+=`<div style="font-size:11px;font-weight:600;letter-spacing:0.08em;color:var(--text-3);font-family:var(--mono);padding:${lastVendor?'16px':' 4px'} 4px 6px;border-bottom:1px solid var(--border);margin-bottom:8px;">${p.vendor}</div>`;
+      lastVendor=p.vendor;
     }
-    out += `<div class="drug-card${cardClass(d)}">
-      <div class="dc-top">
-        <div><div class="dc-name">${d.name}</div><div class="dc-code">${d.code}</div></div>
-        <div class="dc-badges">
-          ${d.ctrl ? '<span class="badge b-ctrl">管制</span>' : ''}
-          ${expBadge(d)}
-          ${d.stock==='?' ? '<span class="badge b-pend">庫存待確認</span>' : '<span class="badge b-ok">有庫存位置</span>'}
-        </div>
-      </div>
-      <div class="dc-generic">${d.generic}</div>
-      <div class="dc-grid">
-        <div class="dc-cell"><div class="dc-label">貨架位置</div><div class="dc-value">${d.shelf}</div></div>
-        <div class="dc-cell"><div class="dc-label">庫存位置</div><div class="dc-value${d.stock==='?' ? ' unknown' : ''}">${d.stock==='?' ? '待確認' : d.stock}</div></div>
-        <div class="dc-cell"><div class="dc-label">效期</div><div class="dc-value${expCellClass(d)}">${d.expiry}</div></div>
-        <div class="dc-cell"><div class="dc-label">廠商</div><div class="dc-value${d.vendor==='?' ? ' unknown' : ''}">${d.vendor==='?' ? '未填' : d.vendor}</div></div>
+    const ec=expClass(p);
+    out+=`<div class="product-card">
+      <div class="pc-top"><div><div class="pc-name">${p.name}</div><div class="pc-code">${p.barcode}</div></div><div class="pc-price">NT$ ${p.price}</div></div>
+      <div class="pc-grid">
+        <div class="pc-cell"><div class="pc-label">效期</div><div class="pc-value ${ec}">${p.expiry}</div></div>
+        <div class="pc-cell"><div class="pc-label">廠商</div><div class="pc-value">${p.vendor}</div></div>
+        <div class="pc-cell"><div class="pc-label">狀態</div><div class="pc-value">${expBadge(p)}</div></div>
       </div>
     </div>`;
   });
   document.getElementById('search-list').innerHTML = out;
 }
 
-function renderAlert() {
-  const sorted = [...drugs].filter(d => daysUntil(d.expiry) <= 90).sort((a,b) => daysUntil(a.expiry) - daysUntil(b.expiry));
-  const urgent = sorted.filter(d => daysUntil(d.expiry) <= 30);
-  const warn   = sorted.filter(d => { const x=daysUntil(d.expiry); return x>30 && x<=90; });
-
-  const makeRow = (d, cls, dotCls) => {
-    const days = daysUntil(d.expiry);
-    const label = days <= 0 ? '已過期' : `${days} 天`;
-    const color = days <= 30 ? 'var(--red)' : 'var(--amber)';
-    return `<div class="alert-row ${cls}">
-      <div class="alert-dot ${dotCls}"></div>
-      <div class="alert-body">
-        <div class="alert-name">${d.name}</div>
-        <div class="alert-meta">${d.shelf}｜效期 ${d.expiry}｜${d.vendor==='?'?'廠商未填':d.vendor}</div>
-      </div>
-      <div class="alert-right">
-        <div class="alert-days-num" style="color:${color}">${label}</div>
-        <div class="alert-days-lbl">剩餘效期</div>
-      </div>
-    </div>`;
-  };
-
-  document.getElementById('alert-urgent').innerHTML = urgent.length
-    ? urgent.map(d => makeRow(d,'a-red','dot-red')).join('')
-    : '<div class="empty-state">目前無 30 天內到期藥品</div>';
-
-  document.getElementById('alert-warn').innerHTML = warn.length
-    ? warn.map(d => makeRow(d,'a-amber','dot-amber')).join('')
-    : '<div class="empty-state">目前無 31–90 天到期藥品</div>';
-}
-
 function renderVendor() {
   const map = {};
-  drugs.forEach(d => {
-    if (d.vendor==='?') return;
-    if (!map[d.vendor]) map[d.vendor]=[];
-    map[d.vendor].push(d.name);
+  products.forEach(p=>{
+    if(!map[p.vendor]) map[p.vendor]=[];
+    map[p.vendor].push(p);
   });
+  const vendorMap = {};
+  vendors.forEach(v=>{ vendorMap[v.name]=v.tel; });
   const entries = Object.entries(map).sort((a,b)=>b[1].length-a[1].length);
   document.getElementById('vendor-meta').textContent = `共 ${entries.length} 家廠商`;
-  document.getElementById('vendor-list').innerHTML = entries.map(([v,names]) => `
-    <div class="vendor-card" onclick="openVendor('${v}')" style="cursor:pointer">
+  document.getElementById('vendor-list').innerHTML = entries.map(([v,prods])=>{
+    const tel = vendorMap[v]||'電話待填';
+    const telHtml = tel!=='電話待填' ? `<a href="tel:${tel}">${tel}</a>` : tel;
+    return `<div class="vendor-card" onclick="openVendorModal('${v}')">
       <div class="vc-name">${v} <span style="font-size:10px;color:var(--text-3);font-family:var(--mono)">→ 點擊查看</span></div>
-      <span class="vc-count">${names.length} 項藥品</span>
-      <div class="vc-drugs">${names.slice(0,5).map(n=>n.split(' ').slice(0,2).join(' ')).join('、')}${names.length>5?'…':''}</div>
+      <div class="vc-tel">☎ ${telHtml}</div>
+      <span class="vc-count">${prods.length} 項商品</span>
+      <div class="vc-products">${prods.slice(0,4).map(p=>p.name.split(' ')[0]).join('、')}${prods.length>4?'…':''}</div>
+    </div>`;
+  }).join('');
+}
+
+function openVendorModal(vendorName) {
+  const vendorMap = {}; vendors.forEach(v=>{ vendorMap[v.name]=v.tel; });
+  const tel = vendorMap[vendorName]||'電話待填';
+  const prods = products.filter(p=>p.vendor===vendorName);
+  document.getElementById('mv-name').textContent = vendorName;
+  document.getElementById('mv-tel').innerHTML = tel!=='電話待填' ? `☎ <a href="tel:${tel}" style="color:var(--accent)">${tel}</a>` : '☎ 電話待填';
+  document.getElementById('mv-count').textContent = `共 ${prods.length} 項商品`;
+  document.getElementById('mv-body').innerHTML = prods.map(p=>`
+    <div class="modal-row">
+      <div><div class="mr-name">${p.name}</div><div class="mr-code">${p.barcode}｜效期 ${p.expiry}</div></div>
+      <div class="mr-price">NT$ ${p.price}</div>
     </div>`).join('');
+  document.getElementById('vendor-modal').classList.add('open');
+}
+
+function closeVendorModal(e) {
+  if(e.target===document.getElementById('vendor-modal')) document.getElementById('vendor-modal').classList.remove('open');
+}
+
+function renderRecords() {
+  document.getElementById('records-meta').textContent = `今日共 ${records.length} 筆，合計 NT$ ${todayTotal.toLocaleString()}`;
+  document.getElementById('records-list').innerHTML = records.length ? records.map(r=>`
+    <div class="record-row">
+      <div><div class="rr-time">${r.time} · ${r.count} 件商品</div><div class="rr-items">${r.items.slice(0,3).join('、')}${r.items.length>3?`等 ${r.items.length} 項`:''}</div></div>
+      <div class="rr-total">NT$ ${r.total.toLocaleString()}</div>
+    </div>`).join('') : '<div class="empty-state">今日尚無結帳記錄</div>';
 }
 
 function renderOverview() {
-  const map = {};
-  drugs.forEach(d => {
-    const k = d.shelf.replace(/[?抽\s下後倉()]/g,'').charAt(0).toUpperCase() || '其';
-    if (!map[k]) map[k]=0;
-    map[k]++;
-  });
-  const max = Math.max(...Object.values(map));
-  document.getElementById('shelf-list').innerHTML = Object.entries(map)
-    .sort((a,b)=>b[1]-a[1])
-    .map(([k,v]) => `
-      <div class="shelf-row">
-        <div class="shelf-key">${k}</div>
-        <div class="shelf-name">${k} 區</div>
-        <div class="shelf-n">${v}</div>
-        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(v/max*100)}%"></div></div>
-      </div>`).join('');
+  document.getElementById('ov-exp').textContent = expCount;
+  document.getElementById('ov-today').textContent = 'NT$' + todayTotal.toLocaleString();
+  document.getElementById('ov-records').textContent = records.length;
+  const map={};
+  products.forEach(p=>{ if(!map[p.vendor])map[p.vendor]=0; map[p.vendor]++; });
+  const max=Math.max(...Object.values(map));
+  document.getElementById('vendor-overview').innerHTML = Object.entries(map).sort((a,b)=>b[1]-a[1]).map(([v,n])=>`
+    <div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border);">
+      <div style="flex:1;font-size:12.5px">${v}</div>
+      <div style="font-size:12px;font-weight:500;font-family:var(--mono);width:28px;text-align:right">${n}</div>
+      <div style="width:90px;height:4px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;background:var(--accent);border-radius:2px;width:${Math.round(n/max*100)}%"></div></div>
+    </div>`).join('');
 }
 
 function showPage(name, el) {
@@ -790,127 +665,25 @@ function showPage(name, el) {
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   el.classList.add('active');
-  if (name==='alert')    renderAlert();
-  if (name==='vendor')   renderVendor();
-  if (name==='overview') renderOverview();
+  if(name==='alert') renderAlert();
+  if(name==='search') renderSearch();
+  if(name==='vendor') renderVendor();
+  if(name==='records') renderRecords();
+  if(name==='overview') renderOverview();
+  if(name==='checkout') document.getElementById('barcode-input').focus();
 }
-
-
-const vendorTel = {
-  '衛采製藥': '02-2717-5100',
-  '永勝藥品工業': '04-2525-3811',
-  '明德製藥': '06-2637-121',
-  '生達化學製藥': '06-5821-155',
-  '優生製藥廠': '02-2698-5005',
-  '衛達化學製藥': '02-2698-3121',
-  '台田藥品': '02-2698-1234',
-  '永信藥品工業': '04-2520-1234',
-  '瑞安大藥廠': '02-2698-5566',
-  '臺灣阿斯特捷利康': '02-2757-6688',
-  '健喬信元': '03-498-5678',
-  '十全實業': '02-2781-3131',
-  '賽諾菲': '02-2718-5801',
-  '臺灣田邊製藥': '02-2756-7890',
-  '中化裕民健康事業': '04-2228-5678',
-  '輝瑞大藥廠': '02-2757-6500',
-  '正和製藥': '04-2520-5678',
-  '美商默沙東台灣分公司': '02-2716-3456',
-  '新加坡商美納里尼台灣分公司': '02-2717-8899',
-  '榮民製藥': '02-2698-7654',
-  '荷蘭商歐嘉隆台灣分公司': '02-2716-5432',
-  '生達化學製藥二廠': '06-5821-155',
-  '台灣百靈佳殷格翰': '02-2718-5678',
-  '元宙化學製藥': '04-2520-3333',
-  '恆振企業': '02-2698-2222',
-  '羅氏大藥廠': '02-2716-7890',
-  '優良化學製藥': '02-2698-4444',
-  '台灣諾華': '02-2757-5566',
-  '南光化學製藥': '06-263-7890',
-  '景德製藥': '04-2520-1111',
-  '新瑞生物科技': '02-2717-3333',
-  '信東生技': '02-2718-1818',
-  '山德士': '02-2716-6688',
-  '東生華製藥': '03-498-7777',
-  '友華生技醫藥': '02-2717-9999',
-  '天義企業': '02-2698-8888',
-  '瑞士諾華': '02-2757-5566',
-  '臺灣百靈佳殷格翰': '02-2718-5678',
-};
-
-function openVendor(vendorName) {
-  const tel = vendorTel[vendorName] || '電話待填';
-  const vendorDrugs = drugs.filter(d => d.vendor === vendorName);
-  document.getElementById('modal-vendor-name').textContent = vendorName;
-  document.getElementById('modal-vendor-tel').textContent = '☎ ' + tel;
-  document.getElementById('modal-count').textContent = '共 ' + vendorDrugs.length + ' 項藥品';
-  document.getElementById('modal-body').innerHTML = vendorDrugs.map(d => `
-    <div class="modal-drug-row">
-      <div class="mdr-left">
-        <div class="mdr-name">${d.name}</div>
-        <div class="mdr-generic">${d.generic}</div>
-      </div>
-      <div class="mdr-right">
-        ${d.ctrl ? '<span class="mdr-ctrl">管制</span>' : ''}
-        <span class="mdr-shelf">${d.shelf}</span>
-      </div>
-    </div>`).join('');
-  document.getElementById('vendor-modal').classList.add('open');
-}
-
-function closeModal(e) {
-  if (e.target === document.getElementById('vendor-modal')) {
-    document.getElementById('vendor-modal').classList.remove('open');
-  }
-}
-
 
 function toggleMenu() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('overlay-bg');
-  sidebar.classList.toggle('open');
-  overlay.classList.toggle('open');
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay-bg').classList.toggle('open');
 }
-
 function closeMenu() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('overlay-bg').classList.remove('open');
 }
-
-// Close menu when nav item is clicked on mobile
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    if (window.innerWidth <= 680) closeMenu();
-  });
+document.querySelectorAll('.nav-item').forEach(item=>{
+  item.addEventListener('click',()=>{ if(window.innerWidth<=680) closeMenu(); });
 });
-
-
-function checkLogin() {
-  const val = document.getElementById('login-input').value.toLowerCase();
-  if (val === 'dr') {
-    document.getElementById('login-overlay').style.display = 'none';
-    document.getElementById('login-input').value = '';
-  } else {
-    document.getElementById('login-error').textContent = '密碼錯誤，請再試一次';
-    document.getElementById('login-input').value = '';
-    document.getElementById('login-input').focus();
-  }
-}
-
-renderSearch();
 </script>
-
-<div class="modal-overlay" id="vendor-modal" onclick="closeModal(event)">
-  <div class="modal">
-    <div class="modal-header">
-      <div>
-        <div class="modal-vendor-name" id="modal-vendor-name"></div>
-        <div class="modal-tel" id="modal-vendor-tel"></div>
-      </div>
-      <button class="modal-close" onclick="document.getElementById('vendor-modal').classList.remove('open')">✕</button>
-    </div>
-    <div class="modal-count" id="modal-count"></div>
-    <div class="modal-body" id="modal-body"></div>
-  </div>
-</div>
 </body>
 </html>
