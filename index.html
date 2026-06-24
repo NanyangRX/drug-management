@@ -249,8 +249,8 @@ body { background: var(--bg); font-family: var(--sans); color: var(--text-1); mi
         <div class="summary-row total"><span>總金額</span><span id="total-price">NT$ 0</span></div>
         <button class="confirm-btn" id="confirm-btn" onclick="confirmCheckout()">確認結帳 →</button>
         <div class="change-section" id="change-section" style="display:none">
-          <div class="change-label">客人付款金額 (NT$) · 輸入後按 Enter 完成交易</div>
-          <input class="change-input" id="paid-input" type="number" placeholder="0" oninput="calcChange()" onkeydown="if(event.key==='Enter') finishSale()" />
+          <div class="change-label">客人付款金額 (NT$) · Enter 完成交易 · Esc 返回購物車</div>
+          <input class="change-input" id="paid-input" type="number" placeholder="0" oninput="calcChange()" onkeydown="if(event.key==='Enter') finishSale(); if(event.key==='Escape') backToCart();" />
           <div class="change-result" id="change-result"></div>
           <button class="clear-btn" onclick="finishSale()">✓ 完成交易 · 下一位客人</button>
           <button class="back-btn" onclick="backToCart()">← 返回購物車（取消鎖定）</button>
