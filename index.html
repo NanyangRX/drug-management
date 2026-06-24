@@ -51,6 +51,8 @@ body { background: var(--bg); font-family: var(--sans); color: var(--text-1); mi
 .scan-input::placeholder { color: var(--text-3); font-size: 12px; }
 .scan-btn { padding: 9px 16px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 13px; font-family: var(--sans); font-weight: 500; cursor: pointer; white-space: nowrap; }
 .scan-btn:hover { background: #255E36; }
+.qty-mode-input { width: 90px; padding: 9px 13px; background: var(--amber-bg); border: 1.5px solid var(--amber); border-radius: var(--radius-sm); font-size: 13px; font-family: var(--mono); color: var(--text-1); outline: none; text-align: center; }
+.qty-mode-input::placeholder { color: var(--amber); }
 .scan-hint { font-size: 11px; color: var(--text-3); font-family: var(--mono); margin-top: 7px; }
 .cart-table { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 10px; }
 .cart-header { display: grid; grid-template-columns: 1fr 90px 78px 28px; gap: 8px; padding: 9px 14px; background: var(--bg); border-bottom: 1px solid var(--border); font-size: 10px; font-weight: 600; color: var(--text-3); font-family: var(--mono); letter-spacing: 0.06em; }
@@ -80,6 +82,14 @@ body { background: var(--bg); font-family: var(--sans); color: var(--text-1); mi
 .change-result.positive { color: var(--green); font-weight: 600; font-size: 15px; }
 .clear-btn { width: 100%; padding: 11px; background: #0D2818; color: #fff; border: none; border-radius: var(--radius-sm); font-size: 13px; font-family: var(--sans); font-weight: 600; cursor: pointer; margin-top: 12px; letter-spacing: 0.05em; }
 .clear-btn:hover { background: #1A4A2A; }
+.confirm-btn { width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 14px; font-family: var(--sans); font-weight: 600; cursor: pointer; margin-top: 14px; letter-spacing: 0.02em; }
+.confirm-btn:hover { background: #255E36; }
+.confirm-btn:disabled { background: var(--border-strong); cursor: not-allowed; }
+.back-btn { width: 100%; padding: 9px; background: none; color: var(--text-3); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; font-family: var(--sans); cursor: pointer; margin-top: 8px; }
+.back-btn:hover { background: var(--bg); color: var(--text-2); }
+.cart-table.locked { opacity: 0.55; pointer-events: none; position: relative; }
+.cart-table.locked::after { content: '🔒 已鎖定，無法修改'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-family: var(--mono); color: var(--text-2); background: rgba(250,250,247,0.35); }
+.scan-area.locked { opacity: 0.45; pointer-events: none; }
 
 /* Alert */
 .alert-section { margin-bottom: 26px; }
@@ -216,15 +226,16 @@ body { background: var(--bg); font-family: var(--sans); color: var(--text-1); mi
 <main class="main">
 
   <div id="page-checkout" class="page active">
-    <div class="page-head"><div class="page-title">結帳</div><div class="page-sub">掃描條碼加入購物車，輸入付款金額計算找零</div></div>
+    <div class="page-head"><div class="page-title">結帳</div><div class="page-sub">掃描條碼加入購物車 → 確認結帳 → 輸入金額按 Enter 完成</div></div>
     <div class="checkout-layout">
       <div>
         <div class="scan-area">
           <div class="scan-row">
-            <input class="scan-input" id="barcode-input" placeholder="掃描條碼或手動輸入後按 Enter…" onkeydown="if(event.key==='Enter') addItem()" />
+            <input class="scan-input" id="barcode-input" placeholder="掃描條碼或手動輸入後按 Enter…（留空按 Enter 確認結帳）" onkeydown="handleBarcodeKey(event)" />
+            <input class="qty-mode-input" id="qty-mode-input" type="number" min="1" placeholder="數量" style="display:none" onkeydown="handleQtyModeKey(event)" />
             <button class="scan-btn" onclick="addItem()">加入</button>
           </div>
-          <div class="scan-hint">掃碼機掃完自動加入 · 重複掃同商品數量自動+1</div>
+          <div class="scan-hint">掃碼機掃完自動加入，重複掃同商品數量自動+1 · 輸入條碼後按 <b>Tab</b> 鍵可指定數量</div>
         </div>
         <div class="cart-table">
           <div class="cart-header"><span>商品</span><span style="text-align:center">數量</span><span style="text-align:right">小計</span><span></span></div>
@@ -236,12 +247,14 @@ body { background: var(--bg); font-family: var(--sans); color: var(--text-1); mi
         <div class="summary-row"><span>商品項目</span><span id="item-count" style="font-family:var(--mono)">0 項</span></div>
         <div class="summary-row"><span>總數量</span><span id="item-qty" style="font-family:var(--mono)">0 件</span></div>
         <div class="summary-row total"><span>總金額</span><span id="total-price">NT$ 0</span></div>
-        <div class="change-section">
-          <div class="change-label">客人付款金額 (NT$)</div>
-          <input class="change-input" id="paid-input" type="number" placeholder="0" oninput="calcChange()" />
+        <button class="confirm-btn" id="confirm-btn" onclick="confirmCheckout()">確認結帳 →</button>
+        <div class="change-section" id="change-section" style="display:none">
+          <div class="change-label">客人付款金額 (NT$) · 輸入後按 Enter 完成交易</div>
+          <input class="change-input" id="paid-input" type="number" placeholder="0" oninput="calcChange()" onkeydown="if(event.key==='Enter') finishSale()" />
           <div class="change-result" id="change-result"></div>
+          <button class="clear-btn" onclick="finishSale()">✓ 完成交易 · 下一位客人</button>
+          <button class="back-btn" onclick="backToCart()">← 返回購物車（取消鎖定）</button>
         </div>
-        <button class="clear-btn" onclick="clearCart()">✓ 結清 · 下一位客人</button>
       </div>
     </div>
   </div>
@@ -412,6 +425,7 @@ const products = [
 ];
 
 let cart = [];
+let cartLocked = false;
 let records = [
   {time:'08:23',items:['Merislon Tab 12mg 敏使朗錠','Nobar 5mg/tab'],total:173,count:2},
   {time:'09:15',items:['Bokey E.M. Cap 100mg','MgO Tab 250mg'],total:120,count:2},
@@ -444,6 +458,7 @@ const expCount = products.filter(p=>daysUntil(p.expiry)<=90).length;
 document.getElementById('sf-exp').textContent = expCount;
 document.getElementById('ov-exp') && (document.getElementById('ov-exp').textContent = expCount);
 updateTodayStats();
+renderCart();
 
 function updateTodayStats() {
   const t = 'NT$' + todayTotal.toLocaleString();
@@ -456,9 +471,58 @@ function updateTodayStats() {
   if (rm) rm.textContent = `今日共 ${records.length} 筆，合計 NT$ ${todayTotal.toLocaleString()}`;
 }
 
-function addItem() {
+function handleBarcodeKey(event) {
   const input = document.getElementById('barcode-input');
-  const code = input.value.trim();
+  if (cartLocked) return;
+  if (event.key === 'Tab') {
+    event.preventDefault();
+    if (!input.value.trim()) return;
+    enterQtyMode();
+    return;
+  }
+  if (event.key === 'Enter') {
+    if (!input.value.trim()) {
+      confirmCheckout();
+    } else {
+      addItem();
+    }
+  }
+}
+
+function enterQtyMode() {
+  const barcodeInput = document.getElementById('barcode-input');
+  const qtyInput = document.getElementById('qty-mode-input');
+  const code = barcodeInput.value.trim();
+  const product = products.find(p => p.barcode === code || p.name.includes(code));
+  if (!product) {
+    barcodeInput.style.borderColor = 'var(--red)';
+    setTimeout(() => { barcodeInput.style.borderColor = ''; }, 800);
+    return;
+  }
+  qtyInput.style.display = 'block';
+  qtyInput.value = '';
+  qtyInput.placeholder = `${product.name.slice(0,8)} 數量`;
+  qtyInput.focus();
+}
+
+function handleQtyModeKey(event) {
+  if (event.key !== 'Enter') return;
+  const barcodeInput = document.getElementById('barcode-input');
+  const qtyInput = document.getElementById('qty-mode-input');
+  const code = barcodeInput.value.trim();
+  const n = parseInt(qtyInput.value) || 0;
+  if (n < 1) { qtyInput.focus(); return; }
+  addItem(code, n);
+  qtyInput.style.display = 'none';
+  qtyInput.value = '';
+  barcodeInput.value = '';
+  barcodeInput.focus();
+}
+
+function addItem(codeOverride, qtyOverride) {
+  if (cartLocked) return;
+  const input = document.getElementById('barcode-input');
+  const code = codeOverride !== undefined ? codeOverride : input.value.trim();
   if (!code) return;
   const product = products.find(p => p.barcode === code || p.name.includes(code));
   if (!product) {
@@ -467,15 +531,17 @@ function addItem() {
     input.value = '';
     return;
   }
+  const addQty = qtyOverride || 1;
   const existing = cart.find(c => c.barcode === product.barcode);
-  if (existing) { existing.qty++; }
-  else { cart.push({...product, qty:1}); }
+  if (existing) { existing.qty += addQty; }
+  else { cart.push({...product, qty:addQty}); }
   input.value = '';
   input.focus();
   renderCart();
 }
 
 function updateQty(barcode, delta) {
+  if (cartLocked) return;
   const item = cart.find(c => c.barcode === barcode);
   if (!item) return;
   item.qty = Math.max(1, item.qty + delta);
@@ -483,6 +549,7 @@ function updateQty(barcode, delta) {
 }
 
 function setQty(barcode, val) {
+  if (cartLocked) return;
   const item = cart.find(c => c.barcode === barcode);
   if (!item) return;
   const n = parseInt(val);
@@ -492,12 +559,18 @@ function setQty(barcode, val) {
 }
 
 function removeItem(barcode) {
+  if (cartLocked) return;
   cart = cart.filter(c => c.barcode !== barcode);
   renderCart();
 }
 
 function renderCart() {
   const body = document.getElementById('cart-body');
+  const cartTable = document.querySelector('.cart-table');
+  const scanArea = document.querySelector('.scan-area');
+  const confirmBtn = document.getElementById('confirm-btn');
+  if (cartLocked) { cartTable.classList.add('locked'); scanArea.classList.add('locked'); }
+  else { cartTable.classList.remove('locked'); scanArea.classList.remove('locked'); }
   if (!cart.length) {
     body.innerHTML = '<div class="cart-empty">尚未加入任何商品<br><span style="font-size:11px;font-family:var(--mono);margin-top:6px;display:block">試試輸入條碼：4719088000001</span></div>';
     document.getElementById('item-count').textContent = '0 項';
@@ -505,8 +578,10 @@ function renderCart() {
     document.getElementById('total-price').textContent = 'NT$ 0';
     document.getElementById('change-result').textContent = '';
     document.getElementById('change-result').className = 'change-result';
+    confirmBtn.disabled = true;
     return;
   }
+  confirmBtn.disabled = cartLocked;
   const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
   const count = cart.reduce((s,c)=>s+c.qty,0);
   body.innerHTML = cart.map(c=>`
@@ -526,6 +601,25 @@ function renderCart() {
   calcChange();
 }
 
+function confirmCheckout() {
+  if (!cart.length) return;
+  cartLocked = true;
+  renderCart();
+  document.getElementById('change-section').style.display = 'block';
+  const paidInput = document.getElementById('paid-input');
+  paidInput.value = '';
+  paidInput.focus();
+  calcChange();
+}
+
+function backToCart() {
+  cartLocked = false;
+  document.getElementById('change-section').style.display = 'none';
+  document.getElementById('paid-input').value = '';
+  renderCart();
+  document.getElementById('barcode-input').focus();
+}
+
 function calcChange() {
   const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
   const paid = parseInt(document.getElementById('paid-input').value)||0;
@@ -534,9 +628,17 @@ function calcChange() {
   else { el.textContent = `找零 NT$ ${(paid-total).toLocaleString()}`; el.className='change-result positive'; }
 }
 
-function clearCart() {
+function finishSale() {
   if (!cart.length) return;
   const total = cart.reduce((s,c)=>s+c.price*c.qty,0);
+  const paid = parseInt(document.getElementById('paid-input').value)||0;
+  if (!paid || paid < total) {
+    const el = document.getElementById('change-result');
+    el.textContent = '金額不足，請確認付款金額';
+    el.className = 'change-result';
+    document.getElementById('paid-input').focus();
+    return;
+  }
   const count = cart.reduce((s,c)=>s+c.qty,0);
   const names = cart.map(c=>c.name);
   const now = new Date();
@@ -544,7 +646,9 @@ function clearCart() {
   records.unshift({time, items:names, total, count});
   todayTotal += total;
   cart = [];
+  cartLocked = false;
   document.getElementById('paid-input').value = '';
+  document.getElementById('change-section').style.display = 'none';
   renderCart();
   updateTodayStats();
   document.getElementById('barcode-input').focus();
